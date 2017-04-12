@@ -35,41 +35,9 @@ class Maze extends World {
   }
 
   // runs the Maze application
-  public static void main(String args[]) {
-    /*ArrayList<Edge> edges = new ArrayList<>();
-    edges.add(new Edge("A", "B", 30));
-    edges.add(new Edge("F", "D", 50));
-    edges.add(new Edge("B", "E", 35));
-    edges.add(new Edge("E", "C", 15));
-    edges.add(new Edge("A", "E", 50));
-    edges.add(new Edge("B", "C", 40));
-    edges.add(new Edge("B", "F", 50));
-    edges.add(new Edge("C", "D", 25));
-    Maze maze = new Maze(edges);
-    maze.kruskal();
-    maze.utils.printList(maze.edgesInTree);
-
-    ArrayList<Edge> edges2 = new ArrayList<>();
-    edges2.add(new Edge("H", "I", 7));
-    edges2.add(new Edge("I", "C", 2));
-    edges2.add(new Edge("D", "E", 9));
-    edges2.add(new Edge("H", "G", 1));
-    edges2.add(new Edge("D", "F", 14));
-    edges2.add(new Edge("A", "H", 8));
-    edges2.add(new Edge("A", "B", 4));
-    edges2.add(new Edge("B", "H", 11));
-    edges2.add(new Edge("I", "G", 6));
-    edges2.add(new Edge("G", "F", 2));
-    edges2.add(new Edge("B", "C", 8));
-    edges2.add(new Edge("C", "F", 4));
-    edges2.add(new Edge("F", "E", 10));
-    edges2.add(new Edge("C", "D", 7));
-    Maze m2 = new Maze(edges2);
-    m2.kruskal();
-    m2.utils.printList(m2.edgesInTree);*/
-
-    Maze m3 = new Maze(3, 3);
-    m3.bigBang(m3.width * m3.responsiveSize, m3.height * m3.responsiveSize, 3);
+  public static void main(String[] argv) {
+    Maze maze = new Maze(3, 3);
+    maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
   }
 
   // generates a randomly weighted graph
@@ -126,7 +94,7 @@ class Maze extends World {
   // returns the current worldScene
   public WorldScene makeScene() {
     WorldScene ws = new WorldScene(this.width * this.responsiveSize,
-      this.height * this.responsiveSize);
+        this.height * this.responsiveSize);
     for (Vertex v : this.allVertices) {
       v.drawVertex(ws, this.responsiveSize, this.width, this.height);
     }

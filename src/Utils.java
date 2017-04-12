@@ -114,7 +114,7 @@ class Utils {
     if (!hash.containsKey(t)) {
       throw new NullPointerException("Given element does not exist");
     } else {
-      while(true) {
+      while (true) {
         if (hash.get(t).equals(t)) {
           return t;
         } else {

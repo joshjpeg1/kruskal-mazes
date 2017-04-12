@@ -94,7 +94,7 @@ public class TestMaze {
     ArrayList<String> ex1 = new ArrayList<>(Arrays.asList("cow", "milk", "moo"));
     ArrayList<String> ex2 = new ArrayList<>(Arrays.asList("chocolate", "vanilla", "strawberry"));
     ArrayList<String> ex3 = new ArrayList<>(Arrays.asList("cow", "milk", "moo",
-      "chocolate", "vanilla", "strawberry"));
+        "chocolate", "vanilla", "strawberry"));
     ArrayList<String> ex4 = new ArrayList<>();
     ArrayList<String> ex5 = new ArrayList<>();
     ArrayList<String> ex6 = new ArrayList<>(Arrays.asList("bumblebee"));
@@ -275,9 +275,9 @@ public class TestMaze {
     Edge ex12 = new Edge(new Vertex(1, 2), new Vertex(2, 2), 2);
 
     ArrayList<Edge> worklist = new ArrayList<>(Arrays.asList(ex1, ex2, ex3, ex4, ex5, ex6, ex7,
-      ex8, ex9, ex10, ex11, ex12));
+        ex8, ex9, ex10, ex11, ex12));
     ArrayList<Edge> edgesInTree = new ArrayList<>(Arrays.asList(ex9, ex11, ex5, ex1,
-      ex3, ex6, ex12, ex8));
+        ex3, ex6, ex12, ex8));
     Maze maze = new Maze(worklist);
 
     return t.checkExpect(maze.kruskal(maze.allEdges, maze.allVertices), edgesInTree);

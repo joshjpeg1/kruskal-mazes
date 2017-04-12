@@ -27,6 +27,12 @@ class Edge<T> {
   }
 
   @Override
+  // overrides the hashCode method for generic purposes
+  public int hashCode() {
+    return (this.from.hashCode() * 100000) + this.to.hashCode();
+  }
+
+  @Override
   // overrides the equals method for generic purposes
   public boolean equals(Object other) {
     if (other instanceof Edge) {

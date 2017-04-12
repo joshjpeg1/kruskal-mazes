@@ -58,9 +58,9 @@ public class Vertex {
   // draws a cell onto the given WorldScene
   void drawVertex(WorldScene ws, int cellSize, int width, int height) {
     ws.placeImageXY(new RectangleImage(cellSize, cellSize, "solid", this.cellColor(width, height)),
-      (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
+        (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
     ws.placeImageXY(new RectangleImage(cellSize, cellSize, "outline", Color.black),
-      (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
+        (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
   }
 
   // returns the correct cell color based on the cell's position
