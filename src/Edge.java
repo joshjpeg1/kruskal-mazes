@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 // represents an Edge in a graph
 // represnts a Wall in a maze
-class Edge {
+class Edge<T> {
   Vertex from;
   Vertex to;
   int weight;
@@ -30,17 +30,12 @@ class Edge {
   // overrides the equals method for generic purposes
   public boolean equals(Object other) {
     if (other instanceof Edge) {
-      return this.sameEdge((Edge) other);
+      Edge that = (Edge) other;
+      return ((this.from.equals(that.from) && this.to.equals(that.to))
+        || (this.from.equals(that.to) && this.to.equals(that.from)));
     } else {
       return false;
     }
-  }
-
-  // helper to the equals method
-  // checks if the given edge has the same vertices as this one
-  boolean sameEdge(Edge other) {
-    return (this.from.sameVertex(other.from) && this.to.sameVertex(other.to))
-      || (this.from.sameVertex(other.to) && this.to.sameVertex(other.from));
   }
 
   // returns the difference in weights between two edges

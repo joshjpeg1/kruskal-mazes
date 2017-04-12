@@ -20,7 +20,6 @@ class Maze extends World {
     this.utils = new Utils();
     this.allEdges = worklist;
     this.allVertices = this.utils.collectVertices(this.allEdges);
-    this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
   }
 
   // constructor
@@ -29,7 +28,7 @@ class Maze extends World {
     this.utils = new Utils();
     this.width = width;
     this.height = height;
-    this.allEdges = this.generateGraph();
+    this.allEdges = this.generateGraph(this.width, this.height);
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
     this.responsiveSize = this.responsiveSize();
@@ -69,14 +68,14 @@ class Maze extends World {
     m2.kruskal();
     m2.utils.printList(m2.edgesInTree);*/
 
-    Maze m3 = new Maze(100, 60);
+    Maze m3 = new Maze(3, 3);
     m3.bigBang(m3.width * m3.responsiveSize, m3.height * m3.responsiveSize, 3);
   }
 
   // generates a randomly weighted graph
-  ArrayList<Edge> generateGraph() {
+  ArrayList<Edge> generateGraph(int width, int height) {
     ArrayList<Edge> edges = new ArrayList<>();
-    int area = this.width * this.height;
+    int area = width * height;
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         Vertex currVertex = new Vertex(x, y);

@@ -35,16 +35,11 @@ public class Vertex {
   // overrides the equals method for generic purposes
   public boolean equals(Object other) {
     if (other instanceof Vertex) {
-      return this.sameVertex((Vertex) other);
+      Vertex that = (Vertex) other;
+      return this.x == that.x && this.y == that.y;
     } else {
       return false;
     }
-  }
-
-  // helper to the equals method
-  // checks if the given edge has the same vertices as this one
-  boolean sameVertex(Vertex other) {
-    return this.x == other.x && this.y == other.y;
   }
 
   // returns the direction that the given Vertex is in relative to this one
@@ -62,7 +57,6 @@ public class Vertex {
 
   // draws a cell onto the given WorldScene
   void drawVertex(WorldScene ws, int cellSize, int width, int height) {
-    // draws box
     ws.placeImageXY(new RectangleImage(cellSize, cellSize, "solid", this.cellColor(width, height)),
       (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
     ws.placeImageXY(new RectangleImage(cellSize, cellSize, "outline", Color.black),

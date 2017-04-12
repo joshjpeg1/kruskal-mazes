@@ -12,7 +12,7 @@ class Utils {
   }
 
   // prints an ArrayList
-  <T> void printList(ArrayList<T> arr) {
+  <T> void print(ArrayList<T> arr) {
     System.out.print("(");
     for (T t : arr) {
       if (arr.indexOf(t) > 0) {
@@ -29,13 +29,13 @@ class Utils {
   }
 
   // prints a HashMap
-  <T, U> void printHash(ArrayList<T> topRow, HashMap<T, U> hash) {
+  <T, U> void print(ArrayList<T> keys, HashMap<T, U> hash) {
     System.out.print("Key:    ");
-    for (T t : topRow) {
+    for (T t : keys) {
       System.out.print(t.toString() + " ");
     }
     System.out.print("\nVal:    ");
-    for (T t : topRow) {
+    for (T t : keys) {
       System.out.print(hash.get(t).toString() + " ");
     }
     System.out.println("\n");
@@ -70,7 +70,7 @@ class Utils {
   }
 
   // adds an element to an ArrayList given that the element does not already exist in the list
-  <T> void addNoDupes(ArrayList<T> arr, T t) {
+  <T> ArrayList<T> addNoDupes(ArrayList<T> arr, T t) {
     boolean add = true;
     for (T item : arr) {
       if (add && item.equals(t)) {
@@ -80,6 +80,7 @@ class Utils {
     if (add) {
       arr.add(t);
     }
+    return arr;
   }
 
   // collects all of the Vertices from a list of Edges and adds them to an ArrayList
@@ -103,18 +104,22 @@ class Utils {
     else {
       // they are separate
       hash.replace(rootTwo, rootOne);
-      return  false;
+      return false;
     }
   }
 
   // helper to the cycle method
   // searches a HashMap to find the root connector of the given item
   <T> T findRoot(HashMap<T, T> hash, T t) {
-    while(true) {
-      if (hash.get(t).equals(t)) {
-        return t;
-      } else {
-        t = hash.get(t);
+    if (!hash.containsKey(t)) {
+      throw new NullPointerException("Given element does not exist");
+    } else {
+      while(true) {
+        if (hash.get(t).equals(t)) {
+          return t;
+        } else {
+          t = hash.get(t);
+        }
       }
     }
   }
