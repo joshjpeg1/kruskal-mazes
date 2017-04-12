@@ -1,34 +1,43 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+import javalib.impworld.*;
+import java.awt.Color;
+import javalib.worldimages.*;
+
 
 // represents a maze
-class Maze {
-  HashMap<String, String> representatives;
+class Maze extends World {
+  int width;
+  int height;
+  ArrayList<Edge> allEdges;
+  ArrayList<Vertex> allVertices;
   ArrayList<Edge> edgesInTree;
-  ArrayList<Edge> worklist;
-  ArrayUtils utils;
-
-  /*HashMap<String, String> kruskal(ArrayList<Edge> edges) {
-
-  }*/
+  Utils utils;
+  Random rand;
 
   Maze(ArrayList<Edge> worklist) {
-    this.utils = new ArrayUtils();
-    this.worklist = worklist;
-    this.edgesInTree = new ArrayList<>();
-    this.representatives = new HashMap<>();
+    this.rand = new Random();
+    this.utils = new Utils();
+    this.allEdges = worklist;
+    this.allVertices = this.utils.collectVertices(this.allEdges);
+    this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+
   }
 
   Maze(int width, int height) {
-    this.utils = new ArrayUtils();
-    this.worklist = this.generateGraph(width * height);
-    this.edgesInTree = new ArrayList<>();
-    this.representatives = new HashMap<>();
-    //this.kruskal();
+    this.rand = new Random();
+    this.utils = new Utils();
+    this.width = width;
+    this.height = height;
+    this.allEdges = this.generateGraph();
+    this.allVertices = this.utils.collectVertices(this.allEdges);
+    this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+
   }
 
   public static void main(String args[]) {
-    ArrayList<Edge> edges = new ArrayList<>();
+    /*ArrayList<Edge> edges = new ArrayList<>();
     edges.add(new Edge("A", "B", 30));
     edges.add(new Edge("F", "D", 50));
     edges.add(new Edge("B", "E", 35));
@@ -58,44 +67,75 @@ class Maze {
     edges2.add(new Edge("C", "D", 7));
     Maze m2 = new Maze(edges2);
     m2.kruskal();
-    m2.utils.printList(m2.edgesInTree);
+    m2.utils.printList(m2.edgesInTree);*/
+
+    Maze m3 = new Maze(4, 4);
+    m3.utils.printList(m3.edgesInTree);
+    m3.bigBang(m3.width * Vertex.CELL_SIZE, m3.height * Vertex.CELL_SIZE, 3);
   }
 
-  ArrayList<Edge> generateGraph(int numNodes) {
+  ArrayList<Edge> generateGraph() {
     ArrayList<Edge> edges = new ArrayList<>();
-    for (int i = 0; i < numNodes; i += 1) {
-      edges.add(new Edge(Integer.toString(i), Integer.toString(i), i));
+    int area = this.width * this.height;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        Edge north = new Edge(new Vertex(x, y), new Vertex(x, y - 1), rand.nextInt(area));
+        Edge east = new Edge(new Vertex(x, y), new Vertex(x + 1, y), rand.nextInt(area));
+        Edge south = new Edge(new Vertex(x, y), new Vertex(x, y + 1), rand.nextInt(area));
+        Edge west = new Edge(new Vertex(x, y), new Vertex(x - 1, y), rand.nextInt(area));
+        if (y > 0) {
+          utils.addEdge(edges, north);
+        }
+        if (y < height - 1) {
+          utils.addEdge(edges, south);
+        }
+        if (x > 0) {
+          utils.addEdge(edges, west);
+        }
+        if (x < width - 1) {
+          utils.addEdge(edges, east);
+        }
+      }
     }
     return edges;
   }
 
   // returns a minimum spanning tree based on Kruskal algorithm
-  ArrayList<Edge> kruskal() {
-    ArrayList<Edge> workSorted = this.utils.quicksort(this.worklist, new EdgeComparator());
-    ArrayList<String> nodes = this.utils.collectNodes(this.worklist);
-    for (String s : nodes) {
-      this.representatives.put(s, s);
+  ArrayList<Edge> kruskal(ArrayList<Edge> worklist, ArrayList<Vertex> vertices) {
+    ArrayList<Edge> workSorted = this.utils.quicksort(worklist, new EdgeComparator());
+    HashMap<Vertex, Vertex> reps = new HashMap<>();
+    for (Vertex v : vertices) {
+      reps.put(v, v);
     }
-    while (this.edgesInTree.size() < nodes.size() - 1) {
+    utils.printList(workSorted);
+    utils.printHash(vertices, reps);
+    ArrayList<Edge> goodEdges = new ArrayList<>();
+    while (goodEdges.size() < vertices.size() - 1) {
       if (workSorted.size() > 0) {
-        if (workSorted.get(0).causesCycle(this.representatives)) {
+        if (workSorted.get(0).causesCycle(reps)) {
           workSorted.remove(0);
         } else {
-          this.edgesInTree.add(workSorted.remove(0));
+
+          goodEdges.add(workSorted.remove(0));
         }
       } else {
         throw new Error("Not enough edges for the given nodes");
       }
     }
-    /*System.out.print("Nodes:    ");
-    for (String s : nodes) {
-      System.out.print(s + " ");
+    utils.printHash(vertices, reps);
+    return goodEdges;
+  }
+
+  @Override
+  public WorldScene makeScene() {
+    WorldScene ws = new WorldScene(this.width * Vertex.CELL_SIZE, this.height * Vertex.CELL_SIZE);
+    int i = 0;
+    for (Vertex v : this.allVertices) {
+      v.drawVertex(ws);
     }
-    System.out.print("\nLinks:    ");
-    for (String s : nodes) {
-      System.out.print(this.representatives.get(s) + " ");
+    for (Edge e : this.edgesInTree) {
+      e.drawEdge(ws);
     }
-    System.out.print("\n");*/
-    return this.edgesInTree;
+    return ws;
   }
 }
