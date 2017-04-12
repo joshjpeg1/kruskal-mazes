@@ -1,7 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // represents utilities for ArrayLists
-class ArrayUtils {
+class Utils {
   // appends two ArrayLists together
   <T> ArrayList<T> append(ArrayList<T> a1, ArrayList<T> a2) {
     for (T t : a2) {
@@ -23,6 +24,19 @@ class ArrayUtils {
       } else {
         System.out.print(")");
       }
+    }
+    System.out.println("\n");
+  }
+
+  // prints a HashMap
+  <T, U> void printHash(ArrayList<T> topRow, HashMap<T, U> hash) {
+    System.out.print("Key:    ");
+    for (T t : topRow) {
+      System.out.print(t.toString() + " ");
+    }
+    System.out.print("\nVal:    ");
+    for (T t : topRow) {
+      System.out.print(hash.get(t).toString() + " ");
     }
     System.out.println("\n");
   }
@@ -56,17 +70,46 @@ class ArrayUtils {
   }
 
   <T> void addNoDupes(ArrayList<T> arr, T t) {
-    if (!arr.contains(t)) {
+    boolean add = true;
+    for (T item : arr) {
+      if (add && item.equals(t)) {
+        add = false;
+      }
+    }
+    if (add) {
       arr.add(t);
     }
   }
 
-  ArrayList<String> collectNodes(ArrayList<Edge> arr) {
-    ArrayList<String> nodes = new ArrayList<>();
+  ArrayList<Vertex> collectVertices(ArrayList<Edge> arr) {
+    ArrayList<Vertex> vertices = new ArrayList<>();
     for (Edge e : arr) {
-      this.addNoDupes(nodes, e.from);
-      this.addNoDupes(nodes, e.to);
+      e.addVertices(vertices);
     }
-    return this.quicksort(nodes, new StringComparator());
+    return vertices;
+  }
+
+  <T> boolean cycle(HashMap<T, T> hash, T t1, T t2) {
+    T rootOne = this.findRoot(hash, t1);
+    T rootTwo = this.findRoot(hash, t2);
+    if (rootOne.equals(rootTwo)) {
+      // they are already connected
+      return true;
+    }
+    else {
+      // they are separate
+      hash.replace(rootTwo, rootOne);
+      return  false;
+    }
+  }
+
+  <T> T findRoot(HashMap<T, T> hash, T t) {
+    while(true) {
+      if (hash.get(t).equals(t)) {
+        return t;
+      } else {
+        t = hash.get(t);
+      }
+    }
   }
 }
