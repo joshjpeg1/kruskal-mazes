@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// represents utilities for ArrayLists
+// represents utilities for ArrayLists and HashMaps
 class Utils {
   // appends two ArrayLists together
   <T> ArrayList<T> append(ArrayList<T> a1, ArrayList<T> a2) {
@@ -69,6 +69,7 @@ class Utils {
     return filteredList;
   }
 
+  // adds an element to an ArrayList given that the element does not already exist in the list
   <T> void addNoDupes(ArrayList<T> arr, T t) {
     boolean add = true;
     for (T item : arr) {
@@ -81,6 +82,7 @@ class Utils {
     }
   }
 
+  // collects all of the Vertices from a list of Edges and adds them to an ArrayList
   ArrayList<Vertex> collectVertices(ArrayList<Edge> arr) {
     ArrayList<Vertex> vertices = new ArrayList<>();
     for (Edge e : arr) {
@@ -89,6 +91,8 @@ class Utils {
     return vertices;
   }
 
+  // returns whether or not the given items cause a cycle in a graph
+  // if not, updates the HashMap accordingly
   <T> boolean cycle(HashMap<T, T> hash, T t1, T t2) {
     T rootOne = this.findRoot(hash, t1);
     T rootTwo = this.findRoot(hash, t2);
@@ -103,6 +107,8 @@ class Utils {
     }
   }
 
+  // helper to the cycle method
+  // searches a HashMap to find the root connector of the given item
   <T> T findRoot(HashMap<T, T> hash, T t) {
     while(true) {
       if (hash.get(t).equals(t)) {

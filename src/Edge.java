@@ -4,18 +4,43 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// represents an edge in a graph
+// represents an Edge in a graph
+// represnts a Wall in a maze
 class Edge {
   Vertex from;
   Vertex to;
   int weight;
   Utils utils;
 
+  // constructor
   Edge(Vertex from, Vertex to, int weight) {
     utils = new Utils();
     this.from = from;
     this.to = to;
     this.weight = weight;
+  }
+
+  @Override
+  // overrides the toString method and returns a string representation of an edge
+  public String toString() {
+    return "(" + this.from + " " + this.to + " " + this.weight + ")";
+  }
+
+  @Override
+  // overrides the equals method for generic purposes
+  public boolean equals(Object other) {
+    if (other instanceof Edge) {
+      return this.sameEdge((Edge) other);
+    } else {
+      return false;
+    }
+  }
+
+  // helper to the equals method
+  // checks if the given edge has the same vertices as this one
+  boolean sameEdge(Edge other) {
+    return (this.from.sameVertex(other.from) && this.to.sameVertex(other.to))
+      || (this.from.sameVertex(other.to) && this.to.sameVertex(other.from));
   }
 
   // returns the difference in weights between two edges
@@ -30,58 +55,37 @@ class Edge {
     }
   }
 
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof Edge) {
-      return this.sameEdge((Edge) other);
-    } else {
-      return false;
-    }
-  }
-
-  boolean sameEdge(Edge other) {
-    return (this.from.sameVertex(other.from) && this.to.sameVertex(other.to))
-      || (this.from.sameVertex(other.to) && this.to.sameVertex(other.from));
-  }
-
-  @Override
-  // returns a string representation of an edge
-  public String toString() {
-    return "(" + this.from + " " + this.to + " " + this.weight + ")";
-  }
-
   // checks if this edge causes a cycle
   boolean causesCycle(HashMap<Vertex, Vertex> reps) {
     return this.utils.cycle(reps, this.from, this.to);
   }
 
+  // adds the vertices in this edge to an ArrayList
   void addVertices(ArrayList<Vertex> vertices) {
     this.utils.addNoDupes(vertices, this.from);
     this.utils.addNoDupes(vertices, this.to);
   }
 
-  void drawEdge(WorldScene ws) {
+  // draws an empty space to remove a wall from the given WorldSize
+  void drawEdge(WorldScene ws, int cellSize) {
     int direction = this.from.direction(this.to);
+    Color gray = new Color(192, 192, 192);
     if (direction == Vertex.NORTH) {
-      ws.placeImageXY(new RectangleImage(Vertex.CELL_SIZE - (Vertex.EDGE_SIZE * 2),
-          (Vertex.EDGE_SIZE * 3), "solid", Color.gray),
-          (from.x * Vertex.CELL_SIZE) + (Vertex.CELL_SIZE / 2),
-          (from.y * Vertex.CELL_SIZE) + (Vertex.EDGE_SIZE / 2));
+      ws.placeImageXY(new RectangleImage(cellSize - 1, 2, "solid", gray),
+          (this.from.x * cellSize) + (cellSize / 2) + 1,
+          (this.from.y * cellSize));
     } else if (direction == Vertex.SOUTH) {
-      ws.placeImageXY(new RectangleImage(Vertex.CELL_SIZE - (Vertex.EDGE_SIZE * 2),
-          (Vertex.EDGE_SIZE * 3), "solid", Color.gray),
-          (from.x * Vertex.CELL_SIZE) + (Vertex.CELL_SIZE / 2),
-          (from.y * Vertex.CELL_SIZE) + (Vertex.EDGE_SIZE / 2) + (Vertex.CELL_SIZE - Vertex.EDGE_SIZE));
+      ws.placeImageXY(new RectangleImage(cellSize - 1, 2, "solid", gray),
+          (this.from.x * cellSize) + (cellSize / 2) + 1,
+          (this.from.y * cellSize) + (cellSize));
     } else if (direction == Vertex.WEST) {
-      ws.placeImageXY(new RectangleImage((Vertex.EDGE_SIZE * 3),
-          Vertex.CELL_SIZE - (Vertex.EDGE_SIZE * 2), "solid", Color.gray),
-          (from.x * Vertex.CELL_SIZE) + (Vertex.EDGE_SIZE / 2),
-          (from.y * Vertex.CELL_SIZE) + (Vertex.CELL_SIZE / 2));
+      ws.placeImageXY(new RectangleImage(2, cellSize - 1, "solid", gray),
+          (this.from.x * cellSize),
+          (this.from.y * cellSize) + (cellSize / 2) + 1);
     } else {
-      ws.placeImageXY(new RectangleImage((Vertex.EDGE_SIZE * 3),
-          Vertex.CELL_SIZE - (Vertex.EDGE_SIZE * 2), "solid", Color.gray),
-          (from.x * Vertex.CELL_SIZE) + (Vertex.EDGE_SIZE / 2) + (Vertex.CELL_SIZE - Vertex.EDGE_SIZE),
-          (from.y * Vertex.CELL_SIZE) + (Vertex.CELL_SIZE / 2));
+      ws.placeImageXY(new RectangleImage(2, cellSize - 1, "solid", gray),
+          (this.from.x * cellSize) + cellSize,
+          (this.from.y * cellSize) + (cellSize / 2) + 1);
     }
   }
 }

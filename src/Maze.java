@@ -3,8 +3,7 @@ import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
 
-
-// represents a maze
+// represents a Maze
 class Maze extends World {
   int width;
   int height;
@@ -13,7 +12,9 @@ class Maze extends World {
   ArrayList<Edge> edgesInTree;
   Utils utils;
   Random rand;
+  int responsiveSize;
 
+  // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
     this.rand = new Random();
     this.utils = new Utils();
@@ -22,6 +23,7 @@ class Maze extends World {
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
   }
 
+  // constructor
   Maze(int width, int height) {
     this.rand = new Random();
     this.utils = new Utils();
@@ -30,8 +32,10 @@ class Maze extends World {
     this.allEdges = this.generateGraph();
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+    this.responsiveSize = this.responsiveSize();
   }
 
+  // runs the Maze application
   public static void main(String args[]) {
     /*ArrayList<Edge> edges = new ArrayList<>();
     edges.add(new Edge("A", "B", 30));
@@ -65,10 +69,11 @@ class Maze extends World {
     m2.kruskal();
     m2.utils.printList(m2.edgesInTree);*/
 
-    Maze m3 = new Maze(50, 50);
-    m3.bigBang(m3.width * Vertex.CELL_SIZE, m3.height * Vertex.CELL_SIZE, 3);
+    Maze m3 = new Maze(100, 60);
+    m3.bigBang(m3.width * m3.responsiveSize, m3.height * m3.responsiveSize, 3);
   }
 
+  // generates a randomly weighted graph
   ArrayList<Edge> generateGraph() {
     ArrayList<Edge> edges = new ArrayList<>();
     int area = this.width * this.height;
@@ -119,14 +124,25 @@ class Maze extends World {
   }
 
   @Override
+  // returns the current worldScene
   public WorldScene makeScene() {
-    WorldScene ws = new WorldScene(this.width * Vertex.CELL_SIZE, this.height * Vertex.CELL_SIZE);
+    WorldScene ws = new WorldScene(this.width * this.responsiveSize,
+      this.height * this.responsiveSize);
     for (Vertex v : this.allVertices) {
-      v.drawVertex(ws);
+      v.drawVertex(ws, this.responsiveSize, this.width, this.height);
     }
     for (Edge e : this.edgesInTree) {
-      e.drawEdge(ws);
+      e.drawEdge(ws, this.responsiveSize);
     }
     return ws;
+  }
+
+  // responsively returns the correct cell size for the maze's width and height
+  int responsiveSize() {
+    if (Vertex.CELL_SIZE * this.width > 1000 || Vertex.CELL_SIZE * this.height > 1000) {
+      return Vertex.CELL_SIZE / 2;
+    } else {
+      return Vertex.CELL_SIZE;
+    }
   }
 }

@@ -2,33 +2,52 @@ import javalib.impworld.WorldScene;
 import javalib.worldimages.*;
 import java.awt.Color;
 
-/**
- * Created by josh_jpeg on 4/11/17.
- */
+// represents a Vertex in a graph
+// represents a Cell in a maze
 public class Vertex {
   int x;
   int y;
-  static final int CELL_SIZE = 15;
-  static final int EDGE_SIZE = 3;
+  static final int CELL_SIZE = 32;
   static final int NORTH = 0;
   static final int EAST = 1;
   static final int SOUTH = 2;
   static final int WEST = 3;
 
+  // constructor
   Vertex(int x, int y) {
     this.x = x;
     this.y = y;
   }
 
   @Override
+  // overrides the toString method and returns a string representation of a vertex
   public String toString() {
     return "(" + x + ", " + y + ")";
   }
 
+  @Override
+  // overrides the hashCode method for equality purposes in HashMaps
+  public int hashCode() {
+    return (this.x * 1000) + this.y;
+  }
+
+  @Override
+  // overrides the equals method for generic purposes
+  public boolean equals(Object other) {
+    if (other instanceof Vertex) {
+      return this.sameVertex((Vertex) other);
+    } else {
+      return false;
+    }
+  }
+
+  // helper to the equals method
+  // checks if the given edge has the same vertices as this one
   boolean sameVertex(Vertex other) {
     return this.x == other.x && this.y == other.y;
   }
 
+  // returns the direction that the given Vertex is in relative to this one
   int direction(Vertex other) {
     if (this.x - other.x < 0) {
       return EAST;
@@ -41,39 +60,23 @@ public class Vertex {
     }
   }
 
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof Vertex) {
-      return this.sameVertex((Vertex) other);
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public int hashCode() {
-    return (this.x * 1000) + this.y;
-  }
-
-  void drawVertex(WorldScene ws) {
+  // draws a cell onto the given WorldScene
+  void drawVertex(WorldScene ws, int cellSize, int width, int height) {
     // draws box
-    ws.placeImageXY(new RectangleImage(this.CELL_SIZE, this.CELL_SIZE, "solid", Color.gray),
-      (this.x * this.CELL_SIZE) + (CELL_SIZE / 2), (this.y * this.CELL_SIZE) + (CELL_SIZE / 2));
-    //draw northern border
-    ws.placeImageXY(new RectangleImage(this.CELL_SIZE, this.EDGE_SIZE, "solid", Color.black),
-      (this.x * this.CELL_SIZE) + (CELL_SIZE / 2),
-      (this.y * this.CELL_SIZE) + (EDGE_SIZE / 2));
-    //draw southern border
-    ws.placeImageXY(new RectangleImage(this.CELL_SIZE, this.EDGE_SIZE, "solid", Color.black),
-      (this.x * this.CELL_SIZE) + (CELL_SIZE / 2),
-      (this.y * this.CELL_SIZE) + (EDGE_SIZE / 2) + (this.CELL_SIZE - this.EDGE_SIZE));
-    //draw western border
-    ws.placeImageXY(new RectangleImage(this.EDGE_SIZE, this.CELL_SIZE, "solid", Color.black),
-      (this.x * this.CELL_SIZE) + (EDGE_SIZE / 2),
-      (this.y * this.CELL_SIZE) + (CELL_SIZE / 2));
-    //draw eastern border
-    ws.placeImageXY(new RectangleImage(this.EDGE_SIZE, this.CELL_SIZE, "solid", Color.black),
-      (this.x * this.CELL_SIZE) + (EDGE_SIZE / 2) + (this.CELL_SIZE - this.EDGE_SIZE),
-      (this.y * this.CELL_SIZE) + (CELL_SIZE / 2));
+    ws.placeImageXY(new RectangleImage(cellSize, cellSize, "solid", this.cellColor(width, height)),
+      (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
+    ws.placeImageXY(new RectangleImage(cellSize, cellSize, "outline", Color.black),
+      (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
+  }
+
+  // returns the correct cell color based on the cell's position
+  Color cellColor(int width, int height) {
+    if (this.x == 0 && this.y == 0) {
+      return new Color(33, 127, 70);
+    } else if (this.x == width - 1 && this.y == height - 1) {
+      return new Color(108, 32, 128);
+    } else {
+      return new Color(192, 192, 192);
+    }
   }
 }
