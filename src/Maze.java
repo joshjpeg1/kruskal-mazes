@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
-import java.awt.Color;
-import javalib.worldimages.*;
 
 
 // represents a maze
@@ -22,7 +20,6 @@ class Maze extends World {
     this.allEdges = worklist;
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
-
   }
 
   Maze(int width, int height) {
@@ -33,7 +30,6 @@ class Maze extends World {
     this.allEdges = this.generateGraph();
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
-
   }
 
   public static void main(String args[]) {
@@ -69,8 +65,7 @@ class Maze extends World {
     m2.kruskal();
     m2.utils.printList(m2.edgesInTree);*/
 
-    Maze m3 = new Maze(4, 4);
-    m3.utils.printList(m3.edgesInTree);
+    Maze m3 = new Maze(50, 50);
     m3.bigBang(m3.width * Vertex.CELL_SIZE, m3.height * Vertex.CELL_SIZE, 3);
   }
 
@@ -79,21 +74,22 @@ class Maze extends World {
     int area = this.width * this.height;
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        Edge north = new Edge(new Vertex(x, y), new Vertex(x, y - 1), rand.nextInt(area));
-        Edge east = new Edge(new Vertex(x, y), new Vertex(x + 1, y), rand.nextInt(area));
-        Edge south = new Edge(new Vertex(x, y), new Vertex(x, y + 1), rand.nextInt(area));
-        Edge west = new Edge(new Vertex(x, y), new Vertex(x - 1, y), rand.nextInt(area));
+        Vertex currVertex = new Vertex(x, y);
+        Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area));
+        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area));
+        Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area));
+        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area));
         if (y > 0) {
-          utils.addEdge(edges, north);
+          utils.addNoDupes(edges, north);
         }
         if (y < height - 1) {
-          utils.addEdge(edges, south);
+          utils.addNoDupes(edges, south);
         }
         if (x > 0) {
-          utils.addEdge(edges, west);
+          utils.addNoDupes(edges, west);
         }
         if (x < width - 1) {
-          utils.addEdge(edges, east);
+          utils.addNoDupes(edges, east);
         }
       }
     }
@@ -107,29 +103,24 @@ class Maze extends World {
     for (Vertex v : vertices) {
       reps.put(v, v);
     }
-    utils.printList(workSorted);
-    utils.printHash(vertices, reps);
     ArrayList<Edge> goodEdges = new ArrayList<>();
     while (goodEdges.size() < vertices.size() - 1) {
       if (workSorted.size() > 0) {
         if (workSorted.get(0).causesCycle(reps)) {
           workSorted.remove(0);
         } else {
-
           goodEdges.add(workSorted.remove(0));
         }
       } else {
         throw new Error("Not enough edges for the given nodes");
       }
     }
-    utils.printHash(vertices, reps);
     return goodEdges;
   }
 
   @Override
   public WorldScene makeScene() {
     WorldScene ws = new WorldScene(this.width * Vertex.CELL_SIZE, this.height * Vertex.CELL_SIZE);
-    int i = 0;
     for (Vertex v : this.allVertices) {
       v.drawVertex(ws);
     }

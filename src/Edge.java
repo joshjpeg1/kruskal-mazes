@@ -1,8 +1,7 @@
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import javalib.impworld.WorldScene;
-import javalib.worldimages.RectangleImage;
-
-import java.awt.*;
+import javalib.worldimages.*;
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 // represents an edge in a graph
@@ -10,9 +9,10 @@ class Edge {
   Vertex from;
   Vertex to;
   int weight;
-
+  Utils utils;
 
   Edge(Vertex from, Vertex to, int weight) {
+    utils = new Utils();
     this.from = from;
     this.to = to;
     this.weight = weight;
@@ -30,23 +30,18 @@ class Edge {
     }
   }
 
-  void setVertex(Vertex v, boolean from) {
-    if (from) {
-      this.from = v;
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof Edge) {
+      return this.sameEdge((Edge) other);
     } else {
-      this.to = v;
+      return false;
     }
   }
 
   boolean sameEdge(Edge other) {
     return (this.from.sameVertex(other.from) && this.to.sameVertex(other.to))
       || (this.from.sameVertex(other.to) && this.to.sameVertex(other.from));
-  }
-
-  // returns the comparison of either the from vertices or to vertices of two edges
-  int compareVertices(Edge other, boolean from) {
-    // FIX
-    return 1;
   }
 
   @Override
@@ -57,45 +52,12 @@ class Edge {
 
   // checks if this edge causes a cycle
   boolean causesCycle(HashMap<Vertex, Vertex> reps) {
-    return causesCycleHelp(reps, this.from, this.to);
+    return this.utils.cycle(reps, this.from, this.to);
   }
 
-  // helper to the causesCycle method
-  // checks if the from and to are connected, and if so returns true
-  // otherwise, replaces representatives accordingly
-  boolean causesCycleHelp(HashMap<Vertex, Vertex> reps, Vertex from, Vertex to) {
-    /*boolean cycle = false;
-    boolean stop = false;
-    while(!stop) {
-      if (reps.get(from).equals(reps.get(to))) {
-        cycle = true;
-        stop = true;
-      } else {
-        if (reps.get(to).equals(to)) {
-          reps.replace(to, reps.get(from));
-          cycle = false;
-          stop = true;
-        } else {
-          to = reps.get(to);
-        }
-      }
-    }
-    return cycle;*/
-    if (reps.get(from).equals(reps.get(to))) {
-      // they are already connected
-      return true;
-    }
-    else {
-      // they are separate
-      if (reps.get(to).equals(to)) {
-        // if to's representative is itself, replace to's representative with from's
-        reps.replace(to, reps.get(from));
-        return false;
-      } else {
-        // recurse again with from and to's representative
-        return causesCycleHelp(reps, from, reps.get(to));
-      }
-    }
+  void addVertices(ArrayList<Vertex> vertices) {
+    this.utils.addNoDupes(vertices, this.from);
+    this.utils.addNoDupes(vertices, this.to);
   }
 
   void drawEdge(WorldScene ws) {

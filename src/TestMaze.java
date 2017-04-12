@@ -1,4 +1,4 @@
-import tester.*;
+import tester.Tester;
 
 public class TestMaze {
 }

@@ -1,7 +1,6 @@
 import javalib.impworld.WorldScene;
-import javalib.worldimages.RectangleImage;
-
-import java.awt.*;
+import javalib.worldimages.*;
+import java.awt.Color;
 
 /**
  * Created by josh_jpeg on 4/11/17.
@@ -9,8 +8,8 @@ import java.awt.*;
 public class Vertex {
   int x;
   int y;
-  static final int CELL_SIZE = 50;
-  static final int EDGE_SIZE = 4;
+  static final int CELL_SIZE = 15;
+  static final int EDGE_SIZE = 3;
   static final int NORTH = 0;
   static final int EAST = 1;
   static final int SOUTH = 2;

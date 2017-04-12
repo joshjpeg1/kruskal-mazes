@@ -81,24 +81,35 @@ class Utils {
     }
   }
 
-  void addEdge(ArrayList<Edge> edges, Edge that) {
-    boolean modify = true;
-    for (Edge e : edges) {
-      if (modify & e.sameEdge(that)) {
-        modify = false;
-      }
-    }
-    if (modify) {
-      edges.add(that);
-    }
-  }
-
   ArrayList<Vertex> collectVertices(ArrayList<Edge> arr) {
     ArrayList<Vertex> vertices = new ArrayList<>();
     for (Edge e : arr) {
-      this.addNoDupes(vertices, e.from);
-      this.addNoDupes(vertices, e.to);
+      e.addVertices(vertices);
     }
     return vertices;
+  }
+
+  <T> boolean cycle(HashMap<T, T> hash, T t1, T t2) {
+    T rootOne = this.findRoot(hash, t1);
+    T rootTwo = this.findRoot(hash, t2);
+    if (rootOne.equals(rootTwo)) {
+      // they are already connected
+      return true;
+    }
+    else {
+      // they are separate
+      hash.replace(rootTwo, rootOne);
+      return  false;
+    }
+  }
+
+  <T> T findRoot(HashMap<T, T> hash, T t) {
+    while(true) {
+      if (hash.get(t).equals(t)) {
+        return t;
+      } else {
+        t = hash.get(t);
+      }
+    }
   }
 }
