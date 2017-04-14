@@ -1,0 +1,131 @@
+[33mcommit 6f37c5ac0cbf15dd345d59af028cafffd186114c[m
+Author: Joshua Pensky <josh_jpeg@Joshuas-MacBook-Pro.local>
+Date:   Fri Apr 14 18:50:35 2017 -0400
+
+    Added comments
+
+[1mdiff --git a/.idea/workspace.xml b/.idea/workspace.xml[m
+[1mindex 61f945f..2c88cb5 100644[m
+[1m--- a/.idea/workspace.xml[m
+[1m+++ b/.idea/workspace.xml[m
+[36m@@ -2,12 +2,8 @@[m
+ <project version="4">[m
+   <component name="ChangeListManager">[m
+     <list default="true" id="0e78d0ca-6a64-4681-898a-ae7331846034" name="Default" comment="">[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Edge.java" afterPath="$PROJECT_DIR$/src/Edge.java" />[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/EdgeComparator.java" afterPath="$PROJECT_DIR$/src/EdgeComparator.java" />[m
+[32m+[m[32m      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />[m
+       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Maze.java" afterPath="$PROJECT_DIR$/src/Maze.java" />[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TestMaze.java" afterPath="$PROJECT_DIR$/src/TestMaze.java" />[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Utils.java" afterPath="$PROJECT_DIR$/src/Utils.java" />[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Vertex.java" afterPath="$PROJECT_DIR$/src/Vertex.java" />[m
+     </list>[m
+     <ignored path="$PROJECT_DIR$/out/" />[m
+     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />[m
+[36m@@ -29,7 +25,7 @@[m
+       <file leaf-file-name="TestMaze.java" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/src/TestMaze.java">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="386">[m
+[32m+[m[32m            <state relative-caret-position="4185">[m
+               <caret line="279" column="8" lean-forward="false" selection-start-line="279" selection-start-column="8" selection-end-line="279" selection-end-column="8" />[m
+               <folding>[m
+                 <element signature="imports" expanded="true" />[m
+[36m@@ -61,11 +57,11 @@[m
+           </provider>[m
+         </entry>[m
+       </file>[m
+[31m-      <file leaf-file-name="Vertex.java" pinned="false" current-in-tab="true">[m
+[32m+[m[32m      <file leaf-file-name="Vertex.java" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/src/Vertex.java">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="461">[m
+[31m-              <caret line="62" column="8" lean-forward="false" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />[m
+[32m+[m[32m            <state relative-caret-position="285">[m
+[32m+[m[32m              <caret line="19" column="3" lean-forward="false" selection-start-line="19" selection-start-column="3" selection-end-line="25" selection-end-column="3" />[m
+               <folding>[m
+                 <element signature="imports" expanded="true" />[m
+                 <element signature="e#550#551#0" expanded="true" />[m
+[36m@@ -80,8 +76,8 @@[m
+       <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/src/Utils.java">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="536">[m
+[31m-              <caret line="116" column="12" lean-forward="false" selection-start-line="116" selection-start-column="12" selection-end-line="116" selection-end-column="12" />[m
+[32m+[m[32m            <state relative-caret-position="210">[m
+[32m+[m[32m              <caret line="24" column="30" lean-forward="false" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />[m
+               <folding>[m
+                 <element signature="imports" expanded="true" />[m
+               </folding>[m
+[36m@@ -89,11 +85,11 @@[m
+           </provider>[m
+         </entry>[m
+       </file>[m
+[31m-      <file leaf-file-name="Maze.java" pinned="false" current-in-tab="false">[m
+[32m+[m[32m      <file leaf-file-name="Maze.java" pinned="false" current-in-tab="true">[m
+         <entry file="file://$PROJECT_DIR$/src/Maze.java">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="386">[m
+[31m-              <caret line="96" column="8" lean-forward="false" selection-start-line="96" selection-start-column="8" selection-end-line="96" selection-end-column="8" />[m
+[32m+[m[32m            <state relative-caret-position="570">[m
+[32m+[m[32m              <caret line="50" column="61" lean-forward="false" selection-start-line="50" selection-start-column="61" selection-end-line="50" selection-end-column="61" />[m
+               <folding>[m
+                 <element signature="imports" expanded="true" />[m
+               </folding>[m
+[36m@@ -104,8 +100,8 @@[m
+       <file leaf-file-name="Edge.java" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/src/Edge.java">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="435">[m
+[31m-              <caret line="31" column="39" lean-forward="false" selection-start-line="31" selection-start-column="39" selection-end-line="31" selection-end-column="39" />[m
+[32m+[m[32m            <state relative-caret-position="45">[m
+[32m+[m[32m              <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />[m
+               <folding>[m
+                 <element signature="imports" expanded="true" />[m
+                 <element signature="e#560#561#0" expanded="true" />[m
+[36m@@ -145,12 +141,12 @@[m
+         <option value="$PROJECT_DIR$/src/IComparator.java" />[m
+         <option value="$PROJECT_DIR$/src/StringComparator.java" />[m
+         <option value="$PROJECT_DIR$/src/ArrayUtils.java" />[m
+[31m-        <option value="$PROJECT_DIR$/src/Edge.java" />[m
+         <option value="$PROJECT_DIR$/src/EdgeComparator.java" />[m
+[31m-        <option value="$PROJECT_DIR$/src/Maze.java" />[m
+         <option value="$PROJECT_DIR$/src/TestMaze.java" />[m
+         <option value="$PROJECT_DIR$/src/Utils.java" />[m
+         <option value="$PROJECT_DIR$/src/Vertex.java" />[m
+[32m+[m[32m        <option value="$PROJECT_DIR$/src/Edge.java" />[m
+[32m+[m[32m        <option value="$PROJECT_DIR$/src/Maze.java" />[m
+       </list>[m
+     </option>[m
+   </component>[m
+[36m@@ -177,9 +173,6 @@[m
+       <foldersAlwaysOnTop value="true" />[m
+     </navigator>[m
+     <panes>[m
+[31m-      <pane id="Scope" />[m
+[31m-      <pane id="PackagesPane" />[m
+[31m-      <pane id="Scratches" />[m
+       <pane id="ProjectPane">[m
+         <subPane>[m
+           <PATH>[m
+[36m@@ -208,6 +201,9 @@[m
+           </PATH>[m
+         </subPane>[m
+       </pane>[m
+[32m+[m[32m      <pane id="Scope" />[m
+[32m+[m[32m      <pane id="PackagesPane" />[m
+[32m+[m[32m      <pane id="Scratches" />[m
+     </panes>[m
+   </component>[m
+   <component name="PropertiesComponent">[m
+[36m@@ -217,7 +213,7 @@[m
+     <property name="project.structure.side.proportion" value="0.2" />[m
+     <property name="last_opened_file_path" value="$PROJECT_DIR$" />[m
+   </component>[m
+[31m-  <component name="RunManager" selected="Application.TestMaze">[m
+[32m+[m[32m  <component name="RunManager" selected="Application.RunMaze">[m
+     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">[m
+       <module name="" />[m
+       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />[m
+[36m@@ -483,19 +479,19 @@[m
+       <window_info id="Capture Analysis" acti
