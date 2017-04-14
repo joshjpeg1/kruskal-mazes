@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 // an ArrayList representing a queue structure
-public class Queue<T> {
+public class Queue<T> implements IDeque<T>{
   ArrayList<T> items;
 
   // Constructor
