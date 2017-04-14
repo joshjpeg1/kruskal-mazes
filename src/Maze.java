@@ -36,7 +36,7 @@ class Maze extends World {
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(3, 3);
+    Maze maze = new Maze(50, 50);
     maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
   }
 
@@ -47,10 +47,12 @@ class Maze extends World {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         Vertex currVertex = new Vertex(x, y);
+        // to make more vertical passages, multiply horizontal edges' weights by 2
+        // to make more horizontal passages, multiply vertical edges' weights by 2
         Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area));
-        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area));
+        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area) * 2);
         Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area));
-        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area));
+        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area) * 2);
         if (y > 0) {
           utils.addNoDupes(edges, north);
         }
