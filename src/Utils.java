@@ -31,13 +31,10 @@ class Utils {
 
   // prints a HashMap
   <T, U> void print(ArrayList<T> keys, HashMap<T, U> hash) {
-    System.out.print("Key:    ");
     for (T t : keys) {
-      System.out.print(t.toString() + " ");
-    }
-    System.out.print("\nVal:    ");
-    for (T t : keys) {
-      System.out.print(hash.get(t).toString() + " ");
+      if (hash.containsKey(t)) {
+        System.out.println(t.toString() + " --> " + hash.get(t).toString());
+      }
     }
     System.out.println("\n");
   }

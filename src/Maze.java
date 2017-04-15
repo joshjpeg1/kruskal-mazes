@@ -126,16 +126,16 @@ class Maze extends World {
       worklist = new Stack<>();
     }
     HashMap<Vertex, Edge> cameFromEdge = new HashMap<>();
-    ArrayList<Edge> solution = new ArrayList<>();
     worklist.push(start);
     Vertex last = start;
+    ArrayList<Vertex> visited = new ArrayList<>();
     while (!worklist.empty()) {
       Vertex next = worklist.peek();
-      System.out.println(next);
-      if (cameFromEdge.containsKey(next)) {
+      if (visited.contains(next)) {
         worklist.pop();
       } else if (next.equals(end)) {
-        solution = this.utils.reverseArr(this.searchHelp(start, cameFromEdge, last));
+        System.out.println("FOUND:\n");
+        return this.utils.reverseArr(this.searchHelp(start, cameFromEdge, last));
       } else {
         ArrayList<Vertex> neighbors = this.utils.getNeighbors(next, edges);
         worklist.pop();
@@ -143,18 +143,21 @@ class Maze extends World {
           worklist.push(v);
           cameFromEdge.put(v, new Edge(next, v, 0));
         }
+        visited.add(next);
         last = next;
       }
     }
-    return solution;
+    return new ArrayList<>();
   }
 
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
+    utils.print(allVertices, cameFromEdge);
     ArrayList<Edge> solution = new ArrayList<>();
-    while(!v.equals(start)) {
+    /*while(!v.equals(start)) {
+      //System.out.println(v.toString() + " --> " + cameFromEdge.get(v).toString());
       solution.add(cameFromEdge.get(v));
       v = cameFromEdge.get(v).getOther(v);
-    }
+    }*/
     return solution;
   }
 }
