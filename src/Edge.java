@@ -89,4 +89,16 @@ class Edge<T> {
           (this.from.y * cellSize) + (cellSize / 2) + 1);
     }
   }
+
+  boolean containsVertex(Vertex v) {
+    return this.from.equals(v) || this.to.equals(v);
+  }
+
+  Vertex getOther(Vertex v) {
+    if (v.equals(this.from)) {
+      return this.to;
+    } else {
+      return this.from;
+    }
+  }
 }

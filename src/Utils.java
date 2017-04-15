@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -122,5 +123,53 @@ class Utils {
         }
       }
     }
+  }
+
+  <T, U> void addNoDupesHash(HashMap<T, U> hash, T t, U u) {
+    if (hash.containsKey(t)) {
+      hash.replace(t, u);
+    } else {
+      hash.put(t, u);
+    }
+  }
+
+  ArrayList<Vertex> getNeighbors(Vertex v, ArrayList<Edge> edges) {
+    ArrayList<Vertex> neighbors = new ArrayList<>();
+    for (Edge e : edges) {
+      if (e.containsVertex(v)) {
+        if (e.from.equals(v)) {
+          neighbors.add(e.to);
+        } else {
+          neighbors.add(e.from);
+        }
+      }
+    }
+    return neighbors;
+  }
+
+  int getEdge(Vertex v1, Vertex v2, ArrayList<Edge> edges) {
+    for (int i = 0; i < edges.size(); i += 1) {
+      if (edges.get(i).containsVertex(v1) && edges.get(i).containsVertex(v2)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  Vertex findOther(Vertex v, ArrayList<Edge> edges) {
+    for (Edge e : edges) {
+      if (e.containsVertex(v)) {
+        return e.getOther(v);
+      }
+    }
+    return v;
+  }
+
+  <T> ArrayList<T> reverseArr(ArrayList<T> arr) {
+    ArrayList<T> reversed = new ArrayList<>();
+    for (T t : arr) {
+      reversed.add(0, t);
+    }
+    return reversed;
   }
 }

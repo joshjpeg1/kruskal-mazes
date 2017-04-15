@@ -36,8 +36,10 @@ class Maze extends World {
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(50, 50);
+    Maze maze = new Maze(4, 4);
     maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
+    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(3, 3), maze.edgesInTree, true));
+    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(3, 3), maze.edgesInTree, false));
   }
 
   // generates a randomly weighted graph
@@ -50,9 +52,9 @@ class Maze extends World {
         // to make more vertical passages, multiply horizontal edges' weights by 2
         // to make more horizontal passages, multiply vertical edges' weights by 2
         Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area));
-        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area) * 2);
+        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area));
         Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area));
-        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area) * 2);
+        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area));
         if (y > 0) {
           utils.addNoDupes(edges, north);
         }
@@ -113,5 +115,46 @@ class Maze extends World {
     } else {
       return Vertex.CELL_SIZE;
     }
+  }
+
+  //
+  ArrayList<Edge> search(Vertex start, Vertex end, ArrayList<Edge> edges, boolean breadth) {
+    IDeque<Vertex> worklist;
+    if (breadth) {
+      worklist = new Queue<>();
+    } else {
+      worklist = new Stack<>();
+    }
+    HashMap<Vertex, Edge> cameFromEdge = new HashMap<>();
+    ArrayList<Edge> solution = new ArrayList<>();
+    worklist.push(start);
+    Vertex last = start;
+    while (!worklist.empty()) {
+      Vertex next = worklist.peek();
+      System.out.println(next);
+      if (cameFromEdge.containsKey(next)) {
+        worklist.pop();
+      } else if (next.equals(end)) {
+        solution = this.utils.reverseArr(this.searchHelp(start, cameFromEdge, last));
+      } else {
+        ArrayList<Vertex> neighbors = this.utils.getNeighbors(next, edges);
+        worklist.pop();
+        for (Vertex v : neighbors) {
+          worklist.push(v);
+          cameFromEdge.put(v, new Edge(next, v, 0));
+        }
+        last = next;
+      }
+    }
+    return solution;
+  }
+
+  ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
+    ArrayList<Edge> solution = new ArrayList<>();
+    while(!v.equals(start)) {
+      solution.add(cameFromEdge.get(v));
+      v = cameFromEdge.get(v).getOther(v);
+    }
+    return solution;
   }
 }

@@ -7,6 +7,7 @@ import java.awt.Color;
 public class Vertex {
   int x;
   int y;
+  boolean visited;
   static final int CELL_SIZE = 32;
   static final int NORTH = 0;
   static final int EAST = 1;
@@ -17,6 +18,7 @@ public class Vertex {
   Vertex(int x, int y) {
     this.x = x;
     this.y = y;
+    this.visited = false;
   }
 
   @Override
@@ -72,5 +74,9 @@ public class Vertex {
     } else {
       return new Color(192, 192, 192);
     }
+  }
+
+  void visitVertex() {
+    this.visited = true;
   }
 }

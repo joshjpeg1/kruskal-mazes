@@ -42,4 +42,8 @@ public class Stack<T> implements IDeque<T> {
   public boolean empty() {
     return items.size() == 0;
   }
+
+  public int size() {
+    return this.items.size();
+  }
 }
