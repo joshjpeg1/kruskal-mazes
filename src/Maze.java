@@ -36,10 +36,10 @@ class Maze extends World {
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(4, 4);
+    Maze maze = new Maze(50, 50);
     maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
-    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(3, 3), maze.edgesInTree, true));
-    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(3, 3), maze.edgesInTree, false));
+    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(49, 49), maze.edgesInTree, true));
+    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(49, 49), maze.edgesInTree, false));
   }
 
   // generates a randomly weighted graph
@@ -129,35 +129,48 @@ class Maze extends World {
     worklist.push(start);
     Vertex last = start;
     ArrayList<Vertex> visited = new ArrayList<>();
+    ArrayList<Edge> solution = new ArrayList<>();
     while (!worklist.empty()) {
       Vertex next = worklist.peek();
       if (visited.contains(next)) {
         worklist.pop();
       } else if (next.equals(end)) {
-        System.out.println("FOUND:\n");
-        return this.utils.reverseArr(this.searchHelp(start, cameFromEdge, last));
+        solution = this.utils.reverseArr(this.searchHelp(start, cameFromEdge, next));
+        return solution;
       } else {
         ArrayList<Vertex> neighbors = this.utils.getNeighbors(next, edges);
         worklist.pop();
         for (Vertex v : neighbors) {
-          worklist.push(v);
-          cameFromEdge.put(v, new Edge(next, v, 0));
+          if (!visited.contains(v)) {
+            worklist.push(v);
+            cameFromEdge.put(v, new Edge(next, v, 0));
+          }
         }
         visited.add(next);
         last = next;
       }
     }
-    return new ArrayList<>();
+    return solution;
   }
 
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
-    utils.print(allVertices, cameFromEdge);
     ArrayList<Edge> solution = new ArrayList<>();
-    /*while(!v.equals(start)) {
-      //System.out.println(v.toString() + " --> " + cameFromEdge.get(v).toString());
+
+    /*this.utils.print(allVertices, cameFromEdge);*/
+    ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
+    while(!v.equals(start)) {
       solution.add(cameFromEdge.get(v));
       v = cameFromEdge.get(v).getOther(v);
-    }*/
+
+      /*
+      // QUICKEST SOLUTION
+      for (Edge e : worklist) {
+        if (e.to.equals(v)) {
+          v = e.from;
+          solution.add(worklist.get(worklist.indexOf(e)));
+        }
+      }*/
+    }
     return solution;
   }
 }

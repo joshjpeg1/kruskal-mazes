@@ -169,4 +169,14 @@ class Utils {
     }
     return reversed;
   }
+
+  <T, U> ArrayList<U> getValues(HashMap<T, U> hash, ArrayList<T> keys) {
+    ArrayList<U> values = new ArrayList<>();
+    for (T t : keys) {
+      if (hash.containsKey(t)) {
+        values.add(hash.get(t));
+      }
+    }
+    return values;
+  }
 }
