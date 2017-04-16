@@ -1,7 +1,10 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
+import javalib.worldimages.FontStyle;
+import javalib.worldimages.TextImage;
 
 // represents a Maze
 class Maze extends World {
@@ -19,6 +22,7 @@ class Maze extends World {
   int vertFactor;
   ArrayList<Edge> animateList;
   boolean animating;
+  boolean drawSolution;
 
   // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
@@ -41,10 +45,12 @@ class Maze extends World {
     this.solution = new ArrayList<>();
     this.player = new Player(this.allVertices.get(0));
     this.animating = true;
+    this.drawSolution = false;
     this.animateList = new ArrayList<>();
-    for (int i = 0; i < this.edgesInTree.size(); i++) {
-      this.animateList.add(this.edgesInTree.remove(i));
+    for (Edge e : this.edgesInTree) {
+      this.animateList.add(e);
     }
+    this.edgesInTree = new ArrayList<>();
   }
 
   void generateGraph() {
@@ -122,12 +128,21 @@ class Maze extends World {
     if (this.animating) {
       if (this.animateList.size() == 0) {
         this.animating = false;
+        this.drawSolution = false;
       } else {
-        this.edgesInTree.add(0, this.animateList.remove(0));
+        if (this.drawSolution) {
+          this.solution.add(0, this.animateList.remove(0));
+          this.solution.get(0).correctEdge(this.allVertices);
+        } else {
+          this.edgesInTree.add(0, this.animateList.remove(0));
+        }
       }
     }
     //player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     for (Edge e : this.edgesInTree) {
+      e.drawEdge(ws, this.responsiveSize);
+    }
+    for (Edge e : this.solution) {
       e.drawEdge(ws, this.responsiveSize);
     }
     return ws;
@@ -136,7 +151,6 @@ class Maze extends World {
   @Override
   public void onKeyEvent(String s) {
     System.out.println(s);
-
     if (s.equals("n") || s.equals("h") || s.equals("v")) {
       if (s.equals("h")) {
         this.horizFactor = 2;
@@ -149,11 +163,14 @@ class Maze extends World {
         this.vertFactor = 1;
       }
       this.generateGraph();
+      this.solution = new ArrayList<>();
       this.animating = true;
+      this.drawSolution = false;
       this.animateList = new ArrayList<>();
-      for (int i = 0; i < this.edgesInTree.size(); i++) {
-        this.animateList.add(this.edgesInTree.remove(i));
+      for (Edge e : this.edgesInTree) {
+        this.animateList.add(e);
       }
+      this.edgesInTree = new ArrayList<>();
     } else if (s.equals("escape")) {
       System.exit(0);
     } else if (!this.animating) {
@@ -163,25 +180,28 @@ class Maze extends World {
         }
         if (s.equals("b")) {
           this.solution = this.search(new Vertex(0, 0),
-            new Vertex(width - 1, height - 1), this.edgesInTree, true);
+            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, true);
         } else if (s.equals("d") || s.equals("s")) {
           this.solution = this.search(new Vertex(0, 0),
-            new Vertex(width - 1, height - 1), this.edgesInTree, false);
+            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false);
           if (s.equals("s")) {
             for (Edge e : this.edgesInTree) {
               e.resetEdge(this.allVertices);
             }
           }
         }
-        for (Edge e : this.edgesInTree) {
-          if (this.solution.contains(e)) {
-            e.correctEdge(this.allVertices);
-          }
+        this.animating = true;
+        this.drawSolution = true;
+        this.animateList = new ArrayList<>();
+        for (Edge e : solution) {
+          this.animateList.add(e);
         }
+        this.solution = new ArrayList<>();
       } else if (s.equals("r")) {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
+        this.solution = new ArrayList<>();
       } else if (s.equals("up")) {
 
       } else if (s.equals("left")) {
