@@ -10,9 +10,11 @@ class Maze extends World {
   ArrayList<Edge> allEdges;
   ArrayList<Vertex> allVertices;
   ArrayList<Edge> edgesInTree;
+  ArrayList<Edge> solution;
   Utils utils;
   Random rand;
   int responsiveSize;
+  Player player;
 
   // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
@@ -32,14 +34,14 @@ class Maze extends World {
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
     this.responsiveSize = this.responsiveSize();
+    this.solution = new ArrayList<>();
+    this.player = new Player(this.allVertices.get(0));
   }
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(50, 50);
+    Maze maze = new Maze(100, 60);
     maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
-    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(49, 49), maze.edgesInTree, true));
-    maze.utils.print(maze.search(new Vertex(0, 0), new Vertex(49, 49), maze.edgesInTree, false));
   }
 
   // generates a randomly weighted graph
@@ -100,12 +102,59 @@ class Maze extends World {
     WorldScene ws = new WorldScene(this.width * this.responsiveSize,
         this.height * this.responsiveSize);
     for (Vertex v : this.allVertices) {
-      v.drawVertex(ws, this.responsiveSize, this.width, this.height);
+      v.drawVertex(ws, this.responsiveSize, this.width, this.height, false);
     }
+    player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
     }
+
     return ws;
+  }
+
+  @Override
+  public void onKeyEvent(String s) {
+    System.out.println(s);
+    if (s.equals("b") || s.equals("d") || s.equals("s")) {
+      for (Edge e : this.edgesInTree) {
+        e.resetEdge(this.allVertices);
+      }
+      if (s.equals("b")) {
+        this.solution = this.search(new Vertex(0, 0),
+          new Vertex(width - 1, height - 1), this.edgesInTree, true);
+      } else if (s.equals("d") || s.equals("s")) {
+        this.solution = this.search(new Vertex(0, 0),
+          new Vertex(width - 1, height - 1), this.edgesInTree, false);
+        if (s.equals("s")) {
+          for (Edge e : this.edgesInTree) {
+            e.resetEdge(this.allVertices);
+          }
+        }
+      }
+      for (Edge e : this.edgesInTree) {
+        if (this.solution.contains(e)) {
+          e.correctEdge(this.allVertices);
+        }
+      }
+    } else if (s.equals("r")) {
+      for (Edge e : this.edgesInTree) {
+        e.resetEdge(this.allVertices);
+      }
+    } else if (s.equals("n")) {
+      this.allEdges = this.generateGraph(this.width, this.height);
+      this.allVertices = this.utils.collectVertices(this.allEdges);
+      this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+    } else if (s.equals("up")) {
+
+    } else if (s.equals("left")) {
+
+    } else if (s.equals("down")) {
+
+    } else if (s.equals("right")) {
+
+    } else {
+      return;
+    }
   }
 
   // responsively returns the correct cell size for the maze's width and height
@@ -156,20 +205,32 @@ class Maze extends World {
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
     ArrayList<Edge> solution = new ArrayList<>();
 
-    /*this.utils.print(allVertices, cameFromEdge);*/
+    //this.utils.print(allVertices, cameFromEdge);
+    ArrayList<Vertex> keys = this.utils.getKeys(cameFromEdge, allVertices);
+    for (Vertex vert : this.allVertices) {
+      if (keys.contains(vert)) {
+        vert.visitVertex();
+      }
+    }
     ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
-    while(!v.equals(start)) {
-      solution.add(cameFromEdge.get(v));
-      v = cameFromEdge.get(v).getOther(v);
+    for (Edge ed : this.edgesInTree) {
+      if (worklist.contains(ed)) {
+        ed.visitEdge(keys);
+      }
+    }
 
-      /*
+    while(!v.equals(start)) {
+      /*solution.add(cameFromEdge.get(v));
+      v = cameFromEdge.get(v).getOther(v);*/
+
+
       // QUICKEST SOLUTION
       for (Edge e : worklist) {
         if (e.to.equals(v)) {
           v = e.from;
           solution.add(worklist.get(worklist.indexOf(e)));
         }
-      }*/
+      }
     }
     return solution;
   }

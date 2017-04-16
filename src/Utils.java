@@ -179,4 +179,14 @@ class Utils {
     }
     return values;
   }
+
+  <T, U> ArrayList<T> getKeys(HashMap<T, U> hash, ArrayList<T> potentialKeys) {
+    ArrayList<T> keys = new ArrayList<>();
+    for (T t : potentialKeys) {
+      if (hash.containsKey(t)) {
+        keys.add(t);
+      }
+    }
+    return keys;
+  }
 }

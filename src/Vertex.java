@@ -7,7 +7,9 @@ import java.awt.Color;
 public class Vertex {
   int x;
   int y;
-  boolean visited;
+  boolean userVisited;
+  boolean compVisited;
+  boolean correct;
   static final int CELL_SIZE = 32;
   static final int NORTH = 0;
   static final int EAST = 1;
@@ -18,7 +20,9 @@ public class Vertex {
   Vertex(int x, int y) {
     this.x = x;
     this.y = y;
-    this.visited = false;
+    this.userVisited = false;
+    this.compVisited = false;
+    this.correct = false;
   }
 
   @Override
@@ -58,16 +62,23 @@ public class Vertex {
   }
 
   // draws a cell onto the given WorldScene
-  void drawVertex(WorldScene ws, int cellSize, int width, int height) {
-    ws.placeImageXY(new RectangleImage(cellSize, cellSize, "solid", this.cellColor(width, height)),
+  void drawVertex(WorldScene ws, int cellSize, int width, int height, boolean playerOn) {
+    ws.placeImageXY(new RectangleImage(cellSize, cellSize, "solid",
+        this.cellColor(width, height, playerOn)),
         (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
     ws.placeImageXY(new RectangleImage(cellSize, cellSize, "outline", Color.black),
         (this.x * cellSize) + (cellSize / 2), (this.y * cellSize) + (cellSize / 2));
   }
 
   // returns the correct cell color based on the cell's position
-  Color cellColor(int width, int height) {
-    if (this.x == 0 && this.y == 0) {
+  Color cellColor(int width, int height, boolean playerOn) {
+    if (this.compVisited && this.correct) {
+      return new Color(62, 118, 204);
+    } else if (this.compVisited) {
+      return new Color(144, 184, 242);
+    } else if (playerOn) {
+      return new Color(255, 200, 10);
+    } else if (this.userVisited || (this.x == 0 && this.y == 0)) {
       return new Color(33, 127, 70);
     } else if (this.x == width - 1 && this.y == height - 1) {
       return new Color(108, 32, 128);
@@ -76,7 +87,22 @@ public class Vertex {
     }
   }
 
+  void userVertex() {
+    this.userVisited = true;
+  }
+
   void visitVertex() {
-    this.visited = true;
+    this.compVisited = true;
+  }
+
+  void correctVertex() {
+    this.correct = true;
+    this.visitVertex();
+  }
+
+  void resetVertex() {
+    this.correct = false;
+    this.compVisited = false;
+    this.userVisited = false;
   }
 }

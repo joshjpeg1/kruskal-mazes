@@ -54,9 +54,9 @@ public class TestMaze {
     Vertex ex2 = new Vertex(2, 2);
     Vertex ex3 = new Vertex(1, 1);
 
-    return t.checkExpect(ex1.cellColor(3, 3), new Color(33, 127, 70))
-      && t.checkExpect(ex2.cellColor(3, 3), new Color(108, 32, 128))
-      && t.checkExpect(ex3.cellColor(3, 3), new Color(192, 192, 192));
+    return t.checkExpect(ex1.cellColor(3, 3, false), new Color(33, 127, 70))
+      && t.checkExpect(ex2.cellColor(3, 3, false), new Color(108, 32, 128))
+      && t.checkExpect(ex3.cellColor(3, 3, false), new Color(192, 192, 192));
   }
 
   // tests the equals method for Edge
