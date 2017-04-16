@@ -15,6 +15,10 @@ class Maze extends World {
   Random rand;
   int responsiveSize;
   Player player;
+  int horizFactor;
+  int vertFactor;
+  ArrayList<Edge> animateList;
+  boolean animating;
 
   // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
@@ -30,18 +34,29 @@ class Maze extends World {
     this.utils = new Utils();
     this.width = width;
     this.height = height;
-    this.allEdges = this.generateGraph(this.width, this.height);
-    this.allVertices = this.utils.collectVertices(this.allEdges);
-    this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+    this.horizFactor = 1;
+    this.vertFactor = 1;
+    this.generateGraph();
     this.responsiveSize = this.responsiveSize();
     this.solution = new ArrayList<>();
     this.player = new Player(this.allVertices.get(0));
+    this.animating = true;
+    this.animateList = new ArrayList<>();
+    for (int i = 0; i < this.edgesInTree.size(); i++) {
+      this.animateList.add(this.edgesInTree.remove(i));
+    }
+  }
+
+  void generateGraph() {
+    this.allEdges = this.generateGraph(this.width, this.height);
+    this.allVertices = this.utils.collectVertices(this.allEdges);
+    this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
   }
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(100, 60);
-    maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, 3);
+    Maze maze = new Maze(60, 60);
+    maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, .01);
   }
 
   // generates a randomly weighted graph
@@ -53,10 +68,10 @@ class Maze extends World {
         Vertex currVertex = new Vertex(x, y);
         // to make more vertical passages, multiply horizontal edges' weights by 2
         // to make more horizontal passages, multiply vertical edges' weights by 2
-        Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area));
-        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area));
-        Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area));
-        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area));
+        Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area) * horizFactor);
+        Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area) * vertFactor);
+        Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area) * horizFactor);
+        Edge west = new Edge(currVertex, new Vertex(x - 1, y), rand.nextInt(area) * vertFactor);
         if (y > 0) {
           utils.addNoDupes(edges, north);
         }
@@ -104,54 +119,80 @@ class Maze extends World {
     for (Vertex v : this.allVertices) {
       v.drawVertex(ws, this.responsiveSize, this.width, this.height, false);
     }
-    player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
+    if (this.animating) {
+      if (this.animateList.size() == 0) {
+        this.animating = false;
+      } else {
+        this.edgesInTree.add(0, this.animateList.remove(0));
+      }
+    }
+    //player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
     }
-
     return ws;
   }
 
   @Override
   public void onKeyEvent(String s) {
     System.out.println(s);
-    if (s.equals("b") || s.equals("d") || s.equals("s")) {
-      for (Edge e : this.edgesInTree) {
-        e.resetEdge(this.allVertices);
+
+    if (s.equals("n") || s.equals("h") || s.equals("v")) {
+      if (s.equals("h")) {
+        this.horizFactor = 2;
+        this.vertFactor = 1;
+      } else if (s.equals("v")) {
+        this.horizFactor = 1;
+        this.vertFactor = 2;
+      } else {
+        this.horizFactor = 1;
+        this.vertFactor = 1;
       }
-      if (s.equals("b")) {
-        this.solution = this.search(new Vertex(0, 0),
-          new Vertex(width - 1, height - 1), this.edgesInTree, true);
-      } else if (s.equals("d") || s.equals("s")) {
-        this.solution = this.search(new Vertex(0, 0),
-          new Vertex(width - 1, height - 1), this.edgesInTree, false);
-        if (s.equals("s")) {
-          for (Edge e : this.edgesInTree) {
-            e.resetEdge(this.allVertices);
+      this.generateGraph();
+      this.animating = true;
+      this.animateList = new ArrayList<>();
+      for (int i = 0; i < this.edgesInTree.size(); i++) {
+        this.animateList.add(this.edgesInTree.remove(i));
+      }
+    } else if (s.equals("escape")) {
+      System.exit(0);
+    } else if (!this.animating) {
+      if (s.equals("b") || s.equals("d") || s.equals("s")) {
+        for (Edge e : this.edgesInTree) {
+          e.resetEdge(this.allVertices);
+        }
+        if (s.equals("b")) {
+          this.solution = this.search(new Vertex(0, 0),
+            new Vertex(width - 1, height - 1), this.edgesInTree, true);
+        } else if (s.equals("d") || s.equals("s")) {
+          this.solution = this.search(new Vertex(0, 0),
+            new Vertex(width - 1, height - 1), this.edgesInTree, false);
+          if (s.equals("s")) {
+            for (Edge e : this.edgesInTree) {
+              e.resetEdge(this.allVertices);
+            }
           }
         }
-      }
-      for (Edge e : this.edgesInTree) {
-        if (this.solution.contains(e)) {
-          e.correctEdge(this.allVertices);
+        for (Edge e : this.edgesInTree) {
+          if (this.solution.contains(e)) {
+            e.correctEdge(this.allVertices);
+          }
         }
+      } else if (s.equals("r")) {
+        for (Edge e : this.edgesInTree) {
+          e.resetEdge(this.allVertices);
+        }
+      } else if (s.equals("up")) {
+
+      } else if (s.equals("left")) {
+
+      } else if (s.equals("down")) {
+
+      } else if (s.equals("right")) {
+
+      } else {
+        return;
       }
-    } else if (s.equals("r")) {
-      for (Edge e : this.edgesInTree) {
-        e.resetEdge(this.allVertices);
-      }
-    } else if (s.equals("n")) {
-      this.allEdges = this.generateGraph(this.width, this.height);
-      this.allVertices = this.utils.collectVertices(this.allEdges);
-      this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
-    } else if (s.equals("up")) {
-
-    } else if (s.equals("left")) {
-
-    } else if (s.equals("down")) {
-
-    } else if (s.equals("right")) {
-
     } else {
       return;
     }
