@@ -129,12 +129,17 @@ class Maze extends World {
     }
     if (this.animating) {
       if (this.animateList.size() == 0) {
-        this.animating = false;
-        this.drawingWhat = -1;
+        if (this.drawingWhat == Maze.SEARCHALGO) {
+          this.drawingWhat = Maze.SOLUTION;
+          this.startAnimation(false);
+        } else {
+          this.animating = false;
+          this.drawingWhat = -1;
+        }
       } else {
         if (this.drawingWhat == Maze.SOLUTION) {
-          this.solution.add(0, this.animateList.remove(0));
-          this.solution.get(0).correctEdge(this.allVertices);
+          this.solution.add(this.animateList.remove(0));
+          this.solution.get(this.solution.size() - 1).correctEdge(this.allVertices);
         } else if (this.drawingWhat == Maze.SEARCHALGO) {
           this.solution.add(0, this.animateList.remove(0));
           this.solution.get(0).visitEdge(this.allVertices);
@@ -153,23 +158,37 @@ class Maze extends World {
     return ws;
   }
 
-  public void animate(boolean breadth) {
+  public void startAnimation(boolean breadth) {
     this.animating = true;
     this.animateList = new ArrayList<>();
+
     if (this.drawingWhat == MAZEWALLS) {
       for (Edge e : this.edgesInTree) {
         this.animateList.add(e);
       }
       this.edgesInTree = new ArrayList<>();
       this.solution = new ArrayList<>();
-    } else if (this.drawingWhat == SEARCHALGO) {
-      for (Edge e : this.edgesInTree) {
-        e.resetEdge(this.allVertices);
+    } else if (this.drawingWhat == SEARCHALGO || this.drawingWhat == SOLUTION) {
+      ArrayList<Edge> localSol;
+      if (this.drawingWhat == SOLUTION) {
+        localSol = this.search(new Vertex(0, 0),
+          new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, true);
+      } else {
+        for (Edge e : this.edgesInTree) {
+          e.resetEdge(this.allVertices);
+        }
+        if (breadth) {
+          localSol = this.search(new Vertex(0, 0),
+            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, true, false);
+        } else {
+          localSol = this.search(new Vertex(0, 0),
+            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, false);
+        }
+        this.solution = new ArrayList<>();
       }
-    } else if (this.drawingWhat == SOLUTION) {
-      /*for (Edge e : this.edgesInTree) {
-        e.resetEdge(this.allVertices);
-      }*/
+      for (Edge e : localSol) {
+        this.animateList.add(e);
+      }
     } else {
       this.animating = false;
       // don't do anything
@@ -178,7 +197,7 @@ class Maze extends World {
 
   @Override
   public void onKeyEvent(String s) {
-    System.out.println(s);
+    s = s.toLowerCase();
     if (s.equals("n") || s.equals("h") || s.equals("v")) {
       for (Edge e : this.edgesInTree) {
         e.resetEdge(this.allVertices);
@@ -195,47 +214,20 @@ class Maze extends World {
       }
       this.generateGraph();
       this.drawingWhat = MAZEWALLS;
-      this.animate(false);
+      this.startAnimation(false);
     } else if (s.equals("escape")) {
       System.exit(0);
     } else if (!this.animating) {
-      if (s.equals("b") || s.equals("d") || s.equals("s")) {
-
-        this.animating = true;
-        this.animateList = new ArrayList<>();
-        ArrayList<Edge> localSol = new ArrayList<>();
-        if (s.equals("b") || s.equals("d")) {
-          for (Edge e : this.edgesInTree) {
-            e.resetEdge(this.allVertices);
-          }
-          if (s.equals("b")) {
-            localSol = this.search(new Vertex(0, 0),
-              new Vertex(this.width - 1, this.height - 1), this.edgesInTree, true, false);
-          } else {
-            localSol = this.search(new Vertex(0, 0),
-              new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, false);
-          }
-          this.drawingWhat = SEARCHALGO;
-          this.solution = new ArrayList<>();
-        } else if (s.equals("s")) {
-          localSol = this.search(new Vertex(0, 0),
-            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, true);
-          /*for (Edge e : this.edgesInTree) {
-            e.resetEdge(this.allVertices);
-          }*/
-          this.drawingWhat = SOLUTION;
-        }
-
-        this.utils.print(localSol);
-        System.out.println("solution size: " + localSol.size());
-        for (Edge e : localSol) {
-          this.animateList.add(e);
-        }
-        localSol = new ArrayList<>();
-        System.out.println("solution size: " + this.animateList.size());
-
-
-      } else if (s.equals("r")) {
+      if (s.equals("b")) {
+        this.drawingWhat = SEARCHALGO;
+        this.startAnimation(true);
+      } else if (s.equals("d")) {
+        this.drawingWhat = SEARCHALGO;
+        this.startAnimation(false);
+      } /*else if (s.equals("s")) {
+        this.drawingWhat = SOLUTION;
+        this.startAnimation(false);
+      }*/ else if (s.equals("r")) {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }

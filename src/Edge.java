@@ -77,7 +77,7 @@ class Edge<T> {
   void drawEdge(WorldScene ws, int cellSize) {
     int direction = this.from.direction(this.to);
     Color color;
-    if (this.compVisited && this.correct) {
+    if (this.correct) {
       color = new Color(62, 118, 204);
     } else if (this.compVisited) {
       color = new Color(144, 184, 242);
