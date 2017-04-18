@@ -203,13 +203,13 @@ class Maze extends World {
         }
         this.solution = new ArrayList<>();
       } else if (s.equals("up")) {
-
+        player.movePlayer(0, -1, edgesInTree);
       } else if (s.equals("left")) {
-
+        player.movePlayer(-1, 0, edgesInTree);
       } else if (s.equals("down")) {
-
+        player.movePlayer(0, 1, edgesInTree);
       } else if (s.equals("right")) {
-
+        player.movePlayer(1, 0, edgesInTree);
       } else {
         return;
       }

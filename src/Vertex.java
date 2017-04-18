@@ -105,4 +105,8 @@ public class Vertex {
     this.compVisited = false;
     this.userVisited = false;
   }
+
+  Vertex addVertices(Vertex other) {
+    return new Vertex(this.x + other.x, this.y + other.y);
+  }
 }
