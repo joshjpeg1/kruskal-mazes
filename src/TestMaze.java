@@ -329,4 +329,13 @@ public class TestMaze {
     examplePlay.movePlayer(-1, 0, edgesCatalog, exampleMaze.width, exampleMaze.height);
     t.checkExpect(examplePlay, new Player(new Vertex(0, 2)));
   }
+
+  // getNeighbors in Utils
+
+  // reverseArr in Utils
+
+  // getValues in Utils
+
+  // reportScore in Maze
+  
 }
