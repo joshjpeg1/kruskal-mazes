@@ -79,7 +79,7 @@ class Edge<T> {
     Color color;
     if (this.userVisited) {
       color = new Color(255, 107, 53);
-    } else if (this.compVisited && this.correct) {
+    } else if (this.correct) {
       color = new Color(62, 118, 204);
     } else if (this.compVisited) {
       color = new Color(144, 184, 242);

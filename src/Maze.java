@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
-import javalib.worldimages.FontStyle;
-import javalib.worldimages.TextImage;
 
 // represents a Maze
 class Maze extends World {
@@ -13,6 +11,8 @@ class Maze extends World {
   ArrayList<Edge> allEdges;
   ArrayList<Vertex> allVertices;
   ArrayList<Edge> edgesInTree;
+  ArrayList<Edge> breadth;
+  ArrayList<Edge> depth;
   ArrayList<Edge> solution;
   Utils utils;
   Random rand;
@@ -22,7 +22,12 @@ class Maze extends World {
   int vertFactor;
   ArrayList<Edge> animateList;
   boolean animating;
-  boolean drawSolution;
+  int drawingWhat;
+  int speed;
+
+  static final int MAZEWALLS = 0;
+  static final int SEARCHALGO = 1;
+  static final int SOLUTION = 2;
 
   // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
@@ -42,21 +47,27 @@ class Maze extends World {
     this.vertFactor = 1;
     this.generateGraph();
     this.responsiveSize = this.responsiveSize();
-    this.solution = new ArrayList<>();
     this.player = new Player(this.allVertices.get(0));
     this.animating = true;
-    this.drawSolution = false;
+    this.drawingWhat = MAZEWALLS;
     this.animateList = new ArrayList<>();
     for (Edge e : this.edgesInTree) {
       this.animateList.add(e);
     }
     this.edgesInTree = new ArrayList<>();
+    speed = 0;
   }
 
   void generateGraph() {
     this.allEdges = this.generateGraph(this.width, this.height);
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
+    this.breadth = this.search(new Vertex(0, 0),
+      new Vertex(this.width - 1, this.height - 1), this.edgesInTree, true, false);
+    this.depth = this.search(new Vertex(0, 0),
+      new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, false);
+    this.solution = this.search(new Vertex(0, 0),
+      new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, true);
   }
 
   // runs the Maze application
@@ -127,13 +138,30 @@ class Maze extends World {
     }
     if (this.animating) {
       if (this.animateList.size() == 0) {
-        this.animating = false;
-        this.drawSolution = false;
-      } else {
-        if (this.drawSolution) {
-          this.solution.add(0, this.animateList.remove(0));
-          this.solution.get(0).correctEdge(this.allVertices);
+        if (this.drawingWhat == Maze.SEARCHALGO) {
+          this.drawingWhat = Maze.SOLUTION;
+          this.startAnimation(false);
         } else {
+          this.animating = false;
+          this.drawingWhat = -1;
+        }
+      } else {
+        if (this.drawingWhat == Maze.SOLUTION || this.drawingWhat == Maze.SEARCHALGO) {
+          if (this.speed % 2 == 0) {
+            this.speed = 1;
+            int index = this.utils.edgeIndex(this.edgesInTree, this.animateList.remove(0));
+            if (index == -1) {
+              this.utils.print(edgesInTree);
+            }
+            if (this.drawingWhat == Maze.SOLUTION) {
+              this.edgesInTree.get(index).correctEdge(this.allVertices);
+            } else {
+              this.edgesInTree.get(index).visitEdge(this.allVertices);
+            }
+          } else {
+            this.speed += 1;
+          }
+        } else if (this.drawingWhat == Maze.MAZEWALLS) {
           this.edgesInTree.add(0, this.animateList.remove(0));
         }
       }
@@ -141,20 +169,59 @@ class Maze extends World {
     player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
-    }
+    }/*
     for (Edge e : player.visited) {
       e.drawEdge(ws, this.responsiveSize);
-    }
-    for (Edge e : this.solution) {
-      e.drawEdge(ws, this.responsiveSize);
-    }
+    }*/
     return ws;
+  }
+
+  public void startAnimation(boolean breadth) {
+    this.animating = true;
+    this.animateList = new ArrayList<>();
+
+    if (this.drawingWhat == MAZEWALLS) {
+      for (Edge e : this.edgesInTree) {
+        this.animateList.add(e);
+      }
+      this.edgesInTree = new ArrayList<>();
+    } else if (this.drawingWhat == SEARCHALGO || this.drawingWhat == SOLUTION) {
+      ArrayList<Edge> localSol = new ArrayList<>();
+      if (this.drawingWhat == SOLUTION) {
+        for (Edge e : this.solution) {
+          localSol.add(e);
+        }
+      } else {
+        for (Edge e : this.edgesInTree) {
+          e.resetEdge(this.allVertices);
+        }
+        if (breadth) {
+          for (Edge e : this.breadth) {
+            localSol.add(e);
+          }
+          this.utils.print(localSol);
+        } else {
+          for (Edge e : this.depth) {
+            localSol.add(e);
+          }
+        }
+      }
+      for (Edge e : localSol) {
+        this.animateList.add(e);
+      }
+    } else {
+      this.animating = false;
+      // don't do anything
+    }
   }
 
   @Override
   public void onKeyEvent(String s) {
-    System.out.println(s);
+    s = s.toLowerCase();
     if (s.equals("n") || s.equals("h") || s.equals("v")) {
+      for (Edge e : this.edgesInTree) {
+        e.resetEdge(this.allVertices);
+      }
       if (s.equals("h")) {
         this.horizFactor = 2;
         this.vertFactor = 1;
@@ -166,45 +233,25 @@ class Maze extends World {
         this.vertFactor = 1;
       }
       this.generateGraph();
-      this.solution = new ArrayList<>();
-      this.animating = true;
-      this.drawSolution = false;
-      this.animateList = new ArrayList<>();
-      for (Edge e : this.edgesInTree) {
-        this.animateList.add(e);
-      }
-      this.edgesInTree = new ArrayList<>();
+      this.drawingWhat = MAZEWALLS;
+      this.startAnimation(false);
     } else if (s.equals("escape")) {
       System.exit(0);
     } else if (!this.animating) {
-      if (s.equals("b") || s.equals("d") || s.equals("s")) {
+      if (s.equals("b")) {
+        this.drawingWhat = SEARCHALGO;
+        this.startAnimation(true);
+      } else if (s.equals("d")) {
+        this.drawingWhat = SEARCHALGO;
+        this.startAnimation(false);
+      } /*else if (s.equals("s")) {
+        this.drawingWhat = SOLUTION;
+        this.startAnimation(false);
+      }*/ else if (s.equals("r")) {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
-        if (s.equals("b")) {
-          this.solution = this.search(new Vertex(0, 0),
-            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, true);
-        } else if (s.equals("d") || s.equals("s")) {
-          this.solution = this.search(new Vertex(0, 0),
-            new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false);
-          if (s.equals("s")) {
-            for (Edge e : this.edgesInTree) {
-              e.resetEdge(this.allVertices);
-            }
-          }
-        }
-        this.animating = true;
-        this.drawSolution = true;
-        this.animateList = new ArrayList<>();
-        for (Edge e : solution) {
-          this.animateList.add(e);
-        }
-        this.solution = new ArrayList<>();
-      } else if (s.equals("r")) {
-        for (Edge e : this.edgesInTree) {
-          e.resetEdge(this.allVertices);
-        }
-        this.solution = new ArrayList<>();
+        //this.solution = new ArrayList<>();
       } else if (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right")) {
         int index;
         if (s.equals("up")) {
@@ -237,7 +284,8 @@ class Maze extends World {
   }
 
   //
-  ArrayList<Edge> search(Vertex start, Vertex end, ArrayList<Edge> edges, boolean breadth) {
+  ArrayList<Edge> search(Vertex start, Vertex end, ArrayList<Edge> edges, boolean breadth,
+                         boolean solved) {
     IDeque<Vertex> worklist;
     if (breadth) {
       worklist = new Queue<>();
@@ -246,62 +294,56 @@ class Maze extends World {
     }
     HashMap<Vertex, Edge> cameFromEdge = new HashMap<>();
     worklist.push(start);
-    Vertex last = start;
     ArrayList<Vertex> visited = new ArrayList<>();
-    ArrayList<Edge> solution = new ArrayList<>();
+    ArrayList<Edge> searchList = new ArrayList<>();
     while (!worklist.empty()) {
       Vertex next = worklist.peek();
       if (visited.contains(next)) {
         worklist.pop();
       } else if (next.equals(end)) {
-        solution = this.utils.reverseArr(this.searchHelp(start, cameFromEdge, next));
-        return solution;
+        if (solved) {
+          return this.utils.reverseArr(this.searchHelp(start, cameFromEdge, next));
+        } else {
+          Vertex last = next;
+          boolean stop = false;
+          for (Edge e : searchList) {
+            if (!stop && e.containsVertex(next)) {
+              last = e.getOther(next);
+              stop = true;
+            }
+          }
+          searchList.add(new Edge(last, next, 0));
+          return searchList;
+        }
       } else {
         ArrayList<Vertex> neighbors = this.utils.getNeighbors(next, edges);
         worklist.pop();
+
         for (Vertex v : neighbors) {
           if (!visited.contains(v)) {
             worklist.push(v);
             cameFromEdge.put(v, new Edge(next, v, 0));
+            searchList.add(new Edge(next, v, 0));
           }
         }
         visited.add(next);
-        last = next;
       }
     }
-    return solution;
+    return searchList;
   }
 
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
-    ArrayList<Edge> solution = new ArrayList<>();
-
-    //this.utils.print(allVertices, cameFromEdge);
-    ArrayList<Vertex> keys = this.utils.getKeys(cameFromEdge, allVertices);
-    for (Vertex vert : this.allVertices) {
-      if (keys.contains(vert)) {
-        vert.visitVertex();
-      }
-    }
+    ArrayList<Edge> result = new ArrayList<>();
     ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
-    for (Edge ed : this.edgesInTree) {
-      if (worklist.contains(ed)) {
-        ed.visitEdge(keys);
-      }
-    }
 
     while(!v.equals(start)) {
-      /*solution.add(cameFromEdge.get(v));
-      v = cameFromEdge.get(v).getOther(v);*/
-
-
-      // QUICKEST SOLUTION
       for (Edge e : worklist) {
         if (e.to.equals(v)) {
           v = e.from;
-          solution.add(worklist.get(worklist.indexOf(e)));
+          result.add(worklist.get(worklist.indexOf(e)));
         }
       }
     }
-    return solution;
+    return result;
   }
 }
