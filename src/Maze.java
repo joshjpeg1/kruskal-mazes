@@ -61,6 +61,7 @@ class Maze extends World {
     solutionDisplayed = false;
   }
 
+  // generates the final graph, with all breadth, depth, and solutions calculated
   void generateGraph() {
     this.allEdges = this.generateGraph(this.width, this.height);
     this.allVertices = this.utils.collectVertices(this.allEdges);
@@ -87,8 +88,6 @@ class Maze extends World {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         Vertex currVertex = new Vertex(x, y);
-        // to make more vertical passages, multiply horizontal edges' weights by 2
-        // to make more horizontal passages, multiply vertical edges' weights by 2
         Edge north = new Edge(currVertex, new Vertex(x, y - 1), rand.nextInt(area) * horizFactor);
         Edge east = new Edge(currVertex, new Vertex(x + 1, y), rand.nextInt(area) * vertFactor);
         Edge south = new Edge(currVertex, new Vertex(x, y + 1), rand.nextInt(area) * horizFactor);
