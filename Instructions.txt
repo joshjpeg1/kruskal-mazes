@@ -1,0 +1,15 @@
+HOW TO PLAY
+-------------
+Press N to build a new maze
+Press H to build a new maze with a horizontal bias
+Press V to build a new maze with a vetical bias
+Press R to reset the maze
+
+Press UP to move up
+Press DOWN to move down
+Press LEFT to move left
+Press RIGHT to move right
+
+Press B to see the Breadth-First Search algorithm
+Press D to see the Depth-First Search algorithm
+
