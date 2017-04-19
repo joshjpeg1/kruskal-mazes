@@ -1,7 +1,11 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
+import javalib.worldimages.OverlayImage;
+import javalib.worldimages.RectangleImage;
+import javalib.worldimages.TextImage;
 
 // represents a Maze
 class Maze extends World {
@@ -20,9 +24,9 @@ class Maze extends World {
   int horizFactor;
   int vertFactor;
   ArrayList<Edge> animateList;
-  boolean animating;
   int drawingWhat;
   int speed;
+  boolean solutionDisplayed;
 
   static final int MAZEWALLS = 0;
   static final int SEARCHALGO = 1;
@@ -47,7 +51,6 @@ class Maze extends World {
     this.generateGraph();
     this.responsiveSize = this.responsiveSize();
     this.player = new Player(this.allVertices.get(0));
-    this.animating = true;
     this.drawingWhat = MAZEWALLS;
     this.animateList = new ArrayList<>();
     for (Edge e : this.edgesInTree) {
@@ -55,6 +58,7 @@ class Maze extends World {
     }
     this.edgesInTree = new ArrayList<>();
     speed = 0;
+    solutionDisplayed = false;
   }
 
   void generateGraph() {
@@ -72,7 +76,7 @@ class Maze extends World {
   // runs the Maze application
   public static void main(String[] argv) {
     Maze maze = new Maze(20, 20);
-    maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, .01);
+    maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
   }
 
   // generates a randomly weighted graph
@@ -131,54 +135,70 @@ class Maze extends World {
   // returns the current worldScene
   public WorldScene makeScene() {
     WorldScene ws = new WorldScene(this.width * this.responsiveSize,
-        this.height * this.responsiveSize);
+      (this.height * this.responsiveSize) + 40);
     for (Vertex v : this.allVertices) {
       v.drawVertex(ws, this.responsiveSize, this.width, this.height, false);
     }
-    if (this.animating) {
-      if (this.animateList.size() == 0) {
-        if (this.drawingWhat == Maze.SEARCHALGO) {
-          this.drawingWhat = Maze.SOLUTION;
-          this.startAnimation(false);
-        } else {
-          this.animating = false;
-          this.drawingWhat = -1;
-        }
+    if (this.animateList.size() == 0) {
+      if (this.drawingWhat == Maze.SEARCHALGO) {
+        this.drawingWhat = Maze.SOLUTION;
+        this.startAnimation(false);
       } else {
-        if (this.drawingWhat == Maze.SOLUTION || this.drawingWhat == Maze.SEARCHALGO) {
-          if (this.speed % 2 == 0) {
-            this.speed = 1;
-            int index = this.utils.edgeIndex(this.edgesInTree, this.animateList.remove(0));
-            if (index == -1) {
-              this.utils.print(edgesInTree);
-            }
-            if (this.drawingWhat == Maze.SOLUTION) {
-              this.edgesInTree.get(index).correctEdge(this.allVertices);
-            } else {
-              this.edgesInTree.get(index).visitEdge(this.allVertices);
-            }
-          } else {
-            this.speed += 1;
+        this.drawingWhat = -1;
+      }
+    } else {
+      if (this.drawingWhat == Maze.SOLUTION || this.drawingWhat == Maze.SEARCHALGO) {
+        if (this.speed % 2 == 0) {
+          this.speed = 1;
+          int index = this.utils.edgeIndex(this.edgesInTree, this.animateList.remove(0));
+          if (index == -1) {
+            this.utils.print(edgesInTree);
           }
-        } else if (this.drawingWhat == Maze.MAZEWALLS) {
-          this.edgesInTree.add(0, this.animateList.remove(0));
+          if (this.drawingWhat == Maze.SOLUTION) {
+            this.edgesInTree.get(index).correctEdge(this.allVertices);
+          } else {
+            this.edgesInTree.get(index).visitEdge(this.allVertices);
+          }
+        } else {
+          this.speed += 1;
         }
+      } else if (this.drawingWhat == Maze.MAZEWALLS) {
+        this.edgesInTree.add(0, this.animateList.remove(0));
       }
     }
-    if (!this.animating) {
+    if (this.animateList.size() == 0 && !solutionDisplayed) {
       player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     }
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
-    }/*
-    for (Edge e : player.visited) {
-      e.drawEdge(ws, this.responsiveSize);
-    }*/
+    }
+    String scorebar;
+    if (this.animateList.size() != 0) {
+      if (this.drawingWhat == MAZEWALLS) {
+        scorebar = "Knocking down " + this.animateList.size() + " walls...";
+      } else if (this.drawingWhat == SEARCHALGO) {
+        scorebar = "Searching for solution...";
+      } else {
+        scorebar = "Displaying solution...";
+      }
+    } else if (this.player.samePosition(new Vertex(this.width - 1, this.height - 1))) {
+      scorebar = "Maze Solved!";
+      if (!this.solutionDisplayed) {
+        this.drawingWhat = Maze.SOLUTION;
+        this.startAnimation(false);
+      }
+    } else if (this.solutionDisplayed) {
+      scorebar = reportScore();
+    } else {
+      scorebar = "Solve the maze";
+    }
+    ws.placeImageXY(new OverlayImage(new TextImage(scorebar, 20, Color.white),
+      new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
+      (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
     return ws;
   }
 
   public void startAnimation(boolean breadth) {
-    this.animating = true;
     this.animateList = new ArrayList<>();
 
     if (this.drawingWhat == MAZEWALLS) {
@@ -211,8 +231,8 @@ class Maze extends World {
       for (Edge e : localSol) {
         this.animateList.add(e);
       }
+      solutionDisplayed = true;
     } else {
-      this.animating = false;
       // don't do anything
     }
   }
@@ -240,23 +260,21 @@ class Maze extends World {
       this.startAnimation(false);
     } else if (s.equals("escape")) {
       System.exit(0);
-    } else if (!this.animating) {
+    } else if (this.animateList.size() == 0) {
       if (s.equals("b")) {
         this.drawingWhat = SEARCHALGO;
         this.startAnimation(true);
       } else if (s.equals("d")) {
         this.drawingWhat = SEARCHALGO;
         this.startAnimation(false);
-      } /*else if (s.equals("s")) {
-        this.drawingWhat = SOLUTION;
-        this.startAnimation(false);
-      }*/ else if (s.equals("r")) {
+      } else if (s.equals("r")) {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
         this.player = new Player(new Vertex(0, 0));
-        //this.solution = new ArrayList<>();
-      } else if (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right")) {
+        solutionDisplayed = false;
+      } else if (!solutionDisplayed &&
+        (s.equals("up") || s.equals("left") || s.equals("down") || s.equals ("right"))) {
         int index;
         if (s.equals("up")) {
           index = player.movePlayer(0, -1, this.edgesInTree, this.width, this.height);
@@ -349,5 +367,17 @@ class Maze extends World {
       }
     }
     return result;
+  }
+
+  String reportScore() {
+    int difference = this.depth.size() - this.breadth.size();
+
+    if (difference > 0) {
+      return "Breadth beat Depth by  " + Math.abs(difference) + " moves.";
+    } else if (difference < 0) {
+      return "Depth beat Breadth by " + Math.abs(difference) + " moves.";
+    } else {
+      return "Breadth and Depth tied at " + this.depth.size() + " moves.";
+    }
   }
 }

@@ -72,15 +72,15 @@ public class Vertex {
 
   // returns the correct cell color based on the cell's position
   Color cellColor(int width, int height, boolean playerOn) {
-    if (this.userVisited || playerOn) {
-      return new Color(255, 107, 53);
-    } else if (this.compVisited && this.correct) {
+    if (this.correct) {
       return new Color(62, 118, 204);
-    } else if (this.compVisited) {
-      return new Color(144, 184, 242);
+    } else if (this.userVisited) {
+      return new Color(255, 107, 53);
     } else if (playerOn) {
       return new Color(255, 200, 10);
-    } else if (this.userVisited || (this.x == 0 && this.y == 0)) {
+    } else if (this.compVisited) {
+      return new Color(144, 184, 242);
+    }  else if (this.userVisited || (this.x == 0 && this.y == 0)) {
       return new Color(33, 127, 70);
     } else if (this.x == width - 1 && this.y == height - 1) {
       return new Color(108, 32, 128);
