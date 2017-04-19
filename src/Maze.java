@@ -71,11 +71,12 @@ class Maze extends World {
       new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, false);
     this.solution = this.search(new Vertex(0, 0),
       new Vertex(this.width - 1, this.height - 1), this.edgesInTree, false, true);
+    this.solutionDisplayed = false;
   }
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(20, 20);
+    Maze maze = new Maze(100, 60);
     maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
   }
 
@@ -150,10 +151,7 @@ class Maze extends World {
       if (this.drawingWhat == Maze.SOLUTION || this.drawingWhat == Maze.SEARCHALGO) {
         if (this.speed % 2 == 0) {
           this.speed = 1;
-          int index = this.utils.edgeIndex(this.edgesInTree, this.animateList.remove(0));
-          if (index == -1) {
-            this.utils.print(edgesInTree);
-          }
+          int index = this.edgesInTree.indexOf(this.animateList.remove(0));
           if (this.drawingWhat == Maze.SOLUTION) {
             this.edgesInTree.get(index).correctEdge(this.allVertices);
           } else {
@@ -172,6 +170,16 @@ class Maze extends World {
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
     }
+    String scorebar = getScorebar();
+
+    ws.placeImageXY(new OverlayImage(new TextImage(scorebar, 20, Color.white),
+      new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
+      (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
+    return ws;
+  }
+
+  // returns the text for the scorebar
+  String getScorebar() {
     String scorebar;
     if (this.animateList.size() != 0) {
       if (this.drawingWhat == MAZEWALLS) {
@@ -192,15 +200,12 @@ class Maze extends World {
     } else {
       scorebar = "Solve the maze";
     }
-    ws.placeImageXY(new OverlayImage(new TextImage(scorebar, 20, Color.white),
-      new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
-      (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
-    return ws;
+    return scorebar;
   }
 
+  // starts the animation of maze walls, search algorithms, or solution
   public void startAnimation(boolean breadth) {
     this.animateList = new ArrayList<>();
-
     if (this.drawingWhat == MAZEWALLS) {
       for (Edge e : this.edgesInTree) {
         this.animateList.add(e);
@@ -221,7 +226,6 @@ class Maze extends World {
           for (Edge e : this.breadth) {
             localSol.add(e);
           }
-          this.utils.print(localSol);
         } else {
           for (Edge e : this.depth) {
             localSol.add(e);
@@ -233,11 +237,12 @@ class Maze extends World {
       }
       solutionDisplayed = true;
     } else {
-      // don't do anything
+      return;
     }
   }
 
   @Override
+  // performs an action based on a given pressed key
   public void onKeyEvent(String s) {
     s = s.toLowerCase();
     if (s.equals("n") || s.equals("h") || s.equals("v")) {
@@ -305,7 +310,8 @@ class Maze extends World {
     }
   }
 
-  //
+  // either uses breadth or depth first search to find the way from the given start Vertex to the
+  // given end Vertex in the given ArrayList of edges (or returns the solution if requested)
   ArrayList<Edge> search(Vertex start, Vertex end, ArrayList<Edge> edges, boolean breadth,
                          boolean solved) {
     IDeque<Vertex> worklist;
@@ -340,7 +346,6 @@ class Maze extends World {
       } else {
         ArrayList<Vertex> neighbors = this.utils.getNeighbors(next, edges);
         worklist.pop();
-
         for (Vertex v : neighbors) {
           if (!visited.contains(v)) {
             worklist.push(v);
@@ -354,10 +359,11 @@ class Maze extends World {
     return searchList;
   }
 
+  // helper to the search method
+  // returns the solution to the given maze
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
     ArrayList<Edge> result = new ArrayList<>();
     ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
-
     while(!v.equals(start)) {
       for (Edge e : worklist) {
         if (e.to.equals(v)) {
@@ -369,9 +375,9 @@ class Maze extends World {
     return result;
   }
 
+  // reports the score of breadth vs depth first search
   String reportScore() {
     int difference = this.depth.size() - this.breadth.size();
-
     if (difference > 0) {
       return "Breadth beat Depth by  " + Math.abs(difference) + " moves.";
     } else if (difference < 0) {

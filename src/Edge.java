@@ -27,12 +27,6 @@ class Edge<T> {
   }
 
   @Override
-  // overrides the toString method and returns a string representation of an edge
-  public String toString() {
-    return "(" + this.from + " " + this.to + " " + this.weight +  ", " + this.compVisited + ")";
-  }
-
-  @Override
   // overrides the hashCode method for generic purposes
   public int hashCode() {
     return (this.from.hashCode() * 100000) + this.to.hashCode();
@@ -106,18 +100,25 @@ class Edge<T> {
     }
   }
 
+  // returns true if the given vertex is within the Edge
   boolean containsVertex(Vertex v) {
     return this.from.equals(v) || this.to.equals(v);
   }
 
+  // returns the other vertex in the Edge, or the given one if not in the vertex
   Vertex getOther(Vertex v) {
-    if (v.equals(this.from)) {
-      return this.to;
+    if (!this.containsVertex(v)) {
+      return v;
     } else {
-      return this.from;
+      if (v.equals(this.from)) {
+        return this.to;
+      } else {
+        return this.from;
+      }
     }
   }
 
+  // sets an Edge and its vertices to a visited (by user) state
   void userEdge(ArrayList<Vertex> vertices) {
     this.userVisited = true;
     for (Vertex v : vertices) {
@@ -127,6 +128,7 @@ class Edge<T> {
     }
   }
 
+  // sets an Edge and its vertices to a visited (by computer) state
   void visitEdge(ArrayList<Vertex> vertices) {
     this.compVisited = true;
     for (Vertex v : vertices) {
@@ -136,6 +138,7 @@ class Edge<T> {
     }
   }
 
+  // sets an Edge and its vertices to a correct solution state
   void correctEdge(ArrayList<Vertex> vertices) {
     this.correct = true;
     this.compVisited = true;
@@ -146,6 +149,7 @@ class Edge<T> {
     }
   }
 
+  // resets an Edge and its vertices to an untouched state
   void resetEdge(ArrayList<Vertex> vertices) {
     this.correct = false;
     this.compVisited = false;

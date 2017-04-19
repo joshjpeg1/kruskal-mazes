@@ -26,12 +26,6 @@ public class Vertex {
   }
 
   @Override
-  // overrides the toString method and returns a string representation of a vertex
-  public String toString() {
-    return "(" + x + ", " + y + ")";
-  }
-
-  @Override
   // overrides the hashCode method for equality purposes in HashMaps
   public int hashCode() {
     return (this.x * 1000) + this.y;
@@ -89,27 +83,41 @@ public class Vertex {
     }
   }
 
+  // sets the vertex as visited (by user)
   void userVertex() {
     this.userVisited = true;
   }
 
+  // sets the vertex as visited (by computer)
   void visitVertex() {
     this.compVisited = true;
   }
 
+  // sets the vertex as part of a correct solution
   void correctVertex() {
     this.correct = true;
     this.visitVertex();
   }
 
+  // resets the vertex to an untouched state
   void resetVertex() {
     this.correct = false;
     this.compVisited = false;
     this.userVisited = false;
   }
 
-  Vertex addVertices(Vertex other) {
-    return new Vertex(this.x + other.x, this.y + other.y);
+  // adds the given ints to the Vertex's x and y coords
+  Vertex addVertices(int dx, int dy) {
+    return new Vertex(this.x + dx, this.y + dy);
+  }
+
+  // returns true if the Vertex is within the given bounds
+  boolean inBounds(int width, int height) {
+    if (this.x > 0 || this.y > 0 || this.x < width || this.y < height) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

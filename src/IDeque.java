@@ -11,6 +11,4 @@ public interface IDeque<T> {
 
   // returns true if the Deque is empty
   boolean empty();
-
-  int size();
 }

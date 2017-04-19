@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,33 +9,6 @@ class Utils {
       a1.add(t);
     }
     return a1;
-  }
-
-  // prints an ArrayList
-  <T> void print(ArrayList<T> arr) {
-    System.out.print("(");
-    for (T t : arr) {
-      if (arr.indexOf(t) > 0) {
-        System.out.print(" ");
-      }
-      System.out.print(t.toString() + "");
-      if (arr.indexOf(t) < arr.size() - 1) {
-        System.out.print(",\n");
-      } else {
-        System.out.print(")");
-      }
-    }
-    System.out.println("\n");
-  }
-
-  // prints a HashMap
-  <T, U> void print(ArrayList<T> keys, HashMap<T, U> hash) {
-    for (T t : keys) {
-      if (hash.containsKey(t)) {
-        System.out.println(t.toString() + " --> " + hash.get(t).toString());
-      }
-    }
-    System.out.println("\n");
   }
 
   // sorts an ArrayList using a quicksort algorithm based on the given comparator
@@ -122,14 +94,7 @@ class Utils {
     }
   }
 
-  <T, U> void addNoDupesHash(HashMap<T, U> hash, T t, U u) {
-    if (hash.containsKey(t)) {
-      hash.replace(t, u);
-    } else {
-      hash.put(t, u);
-    }
-  }
-
+  // returns the neighbors of the given Vertex as directed by the given ArrayList of Edges
   ArrayList<Vertex> getNeighbors(Vertex v, ArrayList<Edge> edges) {
     ArrayList<Vertex> neighbors = new ArrayList<>();
     for (Edge e : edges) {
@@ -144,24 +109,7 @@ class Utils {
     return neighbors;
   }
 
-  int getEdge(Vertex v1, Vertex v2, ArrayList<Edge> edges) {
-    for (int i = 0; i < edges.size(); i += 1) {
-      if (edges.get(i).containsVertex(v1) && edges.get(i).containsVertex(v2)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Vertex findOther(Vertex v, ArrayList<Edge> edges) {
-    for (Edge e : edges) {
-      if (e.containsVertex(v)) {
-        return e.getOther(v);
-      }
-    }
-    return v;
-  }
-
+  // reverse an array
   <T> ArrayList<T> reverseArr(ArrayList<T> arr) {
     ArrayList<T> reversed = new ArrayList<>();
     for (T t : arr) {
@@ -170,6 +118,7 @@ class Utils {
     return reversed;
   }
 
+  // gets the values of a HashMap given the keys and returns them in an ArrayList
   <T, U> ArrayList<U> getValues(HashMap<T, U> hash, ArrayList<T> keys) {
     ArrayList<U> values = new ArrayList<>();
     for (T t : keys) {
@@ -178,24 +127,5 @@ class Utils {
       }
     }
     return values;
-  }
-
-  <T, U> ArrayList<T> getKeys(HashMap<T, U> hash, ArrayList<T> potentialKeys) {
-    ArrayList<T> keys = new ArrayList<>();
-    for (T t : potentialKeys) {
-      if (hash.containsKey(t)) {
-        keys.add(t);
-      }
-    }
-    return keys;
-  }
-
-  int edgeIndex(ArrayList<Edge> edges, Edge e) {
-    for (int i = 0; i < edges.size(); i++) {
-      if (e.equals(edges.get(i))) {
-        return i;
-      }
-    }
-    return -1;
   }
 }

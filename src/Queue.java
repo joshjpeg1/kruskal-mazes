@@ -42,8 +42,4 @@ public class Queue<T> implements IDeque<T>{
   public boolean empty() {
     return this.items.size() == 0;
   }
-
-  public int size() {
-    return this.items.size();
-  }
 }
