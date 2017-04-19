@@ -60,7 +60,7 @@ public class Player {
     }
     ArrayList<Vertex> vertices = this.utils.collectVertices(this.visited);
     for (Vertex v : vertices) {
-      v.drawVertex(ws, cellSize, width, height, false);
+      v.drawVertex(ws, cellSize, width, height, true);
     }
     this.currentPosition.drawVertex(ws, cellSize, width, height, true);
   }

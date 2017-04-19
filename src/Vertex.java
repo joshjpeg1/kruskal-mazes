@@ -72,7 +72,7 @@ public class Vertex {
 
   // returns the correct cell color based on the cell's position
   Color cellColor(int width, int height, boolean playerOn) {
-    if (this.userVisited) {
+    if (this.userVisited || playerOn) {
       return new Color(255, 107, 53);
     } else if (this.compVisited && this.correct) {
       return new Color(62, 118, 204);
