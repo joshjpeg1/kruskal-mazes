@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -166,7 +165,9 @@ class Maze extends World {
         }
       }
     }
-    player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
+    if (!this.animating) {
+      player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
+    }
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
     }/*
@@ -195,6 +196,7 @@ class Maze extends World {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
+        this.player = new Player(new Vertex(0, 0));
         if (breadth) {
           for (Edge e : this.breadth) {
             localSol.add(e);
@@ -222,6 +224,7 @@ class Maze extends World {
       for (Edge e : this.edgesInTree) {
         e.resetEdge(this.allVertices);
       }
+      this.player = new Player(new Vertex(0, 0));
       if (s.equals("h")) {
         this.horizFactor = 2;
         this.vertFactor = 1;
@@ -251,6 +254,7 @@ class Maze extends World {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
+        this.player = new Player(new Vertex(0, 0));
         //this.solution = new ArrayList<>();
       } else if (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right")) {
         int index;
