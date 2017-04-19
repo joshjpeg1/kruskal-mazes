@@ -1,5 +1,6 @@
 import tester.Tester;
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -252,12 +253,13 @@ public class TestMaze {
   }
 
   // tests the generateGraph method for Maze
-  boolean testGenerateGraph(Tester t) {
-    Maze maze = new Maze(0, 0);
-    return t.checkExpect(maze.generateGraph(0, 0).size(), 0)
-      && t.checkExpect(maze.generateGraph(3, 3).size(), 12)
-      && t.checkExpect(maze.generateGraph(100, 60).size(), 11840);
-  }
+//  boolean testGenerateGraph(Tester t) {
+//    Maze maze = new Maze(0, 0);
+//    return t.checkExpect(maze.generateGraph(0, 0).size(), 0)
+//      && t.checkExpect(maze.generateGraph(3, 3).size(), 12)
+//      && t.checkExpect(maze.generateGraph(100, 60).size(), 11840);
+//  }
+
 
   // tests the kruskal method for Maze
   boolean testKruskal(Tester t) {
@@ -294,5 +296,37 @@ public class TestMaze {
       && t.checkExpect(maze2.responsiveSize(), Vertex.CELL_SIZE)
       && t.checkExpect(maze3.responsiveSize(), (Vertex.CELL_SIZE / 2))
       && t.checkExpect(maze4.responsiveSize(), (Vertex.CELL_SIZE / 2));
+  }
+
+  // tests the movePlayer method for Player
+  void testMovePlayer(Tester t) {
+    Maze exampleMaze = new Maze(3, 3);
+
+    Player examplePlay = new Player(new Vertex(0, 0));
+    Edge ex1 = new Edge(new Vertex(0, 0), new Vertex(0, 1), 10);
+    Edge ex2 = new Edge(new Vertex(0, 1), new Vertex(0, 2), 10);
+    Edge ex3 = new Edge(new Vertex(0, 2), new Vertex(1, 2), 10);
+    Edge ex4 = new Edge(new Vertex(1, 2), new Vertex(1, 1), 10);
+    Edge ex5 = new Edge(new Vertex(1, 1), new Vertex(1, 0), 10);
+
+    ArrayList<Edge> edgesCatalog = new ArrayList();
+    edgesCatalog.add(ex1);
+    edgesCatalog.add(ex2);
+    edgesCatalog.add(ex3);
+    edgesCatalog.add(ex4);
+    edgesCatalog.add(ex5);
+
+    // attempting to move right
+    examplePlay.movePlayer(1, 0, edgesCatalog, exampleMaze.width, exampleMaze.height);
+    t.checkExpect(examplePlay, new Player(new Vertex(0, 0)));
+    // attempting to move down
+    examplePlay.movePlayer(0, 1, edgesCatalog, exampleMaze.width, exampleMaze.height);
+    t.checkExpect(examplePlay, new Player(new Vertex(0, 1)));
+    // attempting to move down (again)
+    examplePlay.movePlayer(0, 1, edgesCatalog, exampleMaze.width, exampleMaze.height);
+    t.checkExpect(examplePlay, new Player(new Vertex(0, 2)));
+    // attempting to move left
+    examplePlay.movePlayer(-1, 0, edgesCatalog, exampleMaze.width, exampleMaze.height);
+    t.checkExpect(examplePlay, new Player(new Vertex(0, 2)));
   }
 }
