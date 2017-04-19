@@ -25,12 +25,6 @@ public class Player {
   // moves the player's currentPosition by one depending on the input dx/dy, and records the
   // player's move in the ArrayList visited
   int movePlayer(int dx, int dy, ArrayList<Edge> arr, int width, int height) {
-    // the vertex will be one of 4 options, depending on the key press
-    // "up" will result in v = new Vertex(0, -1)
-    // "down" will result in v = new Vertex(0, 1)
-    // "left" will result in v = new Vertex(-1, 0)
-    // "right" will result in v = new Vertex(1, 0)
-
     Vertex transform = new Vertex(dx, dy);
     Vertex dest = transform.addVertices(this.currentPosition);
 
@@ -38,9 +32,6 @@ public class Player {
         || dest.y >= height) {
       dest = this.currentPosition;
     }
-
-    System.out.println(currentPosition.toString() + ", " + transform.toString() + ", " + dest.toString());
-
 
     for (int i = 0; i < arr.size(); i++) {
       if (arr.get(i).containsVertex(this.currentPosition) && arr.get(i).containsVertex(dest)) {
@@ -55,13 +46,14 @@ public class Player {
 
   // draws the player
   void drawPlayer(WorldScene ws, int cellSize, int width, int height) {
-    for (Edge e : this.visited) {
-      e.drawEdge(ws, cellSize);
-    }
-    ArrayList<Vertex> vertices = this.utils.collectVertices(this.visited);
-    for (Vertex v : vertices) {
-      v.drawVertex(ws, cellSize, width, height, true);
-    }
     this.currentPosition.drawVertex(ws, cellSize, width, height, true);
+  }
+
+  
+  boolean samePosition(Vertex v) {
+    if (this.currentPosition.equals(v)) {
+      return true;
+    }
+    return false;
   }
 }
