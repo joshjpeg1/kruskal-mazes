@@ -17,26 +17,41 @@ public class Player {
     this.visited = new ArrayList<>();
   }
 
-  // moves the player's currentPosition by one depending on the input dx/dy
-  void movePlayer(int dx, int dy, ArrayList<Edge> arr) {
+  @Override
+  public String toString() {
+    return this.currentPosition.toString();
+  }
+
+  // moves the player's currentPosition by one depending on the input dx/dy, and records the
+  // player's move in the ArrayList visited
+  int movePlayer(int dx, int dy, ArrayList<Edge> arr, int width, int height) {
     // the vertex will be one of 4 options, depending on the key press
     // "up" will result in v = new Vertex(0, -1)
     // "down" will result in v = new Vertex(0, 1)
     // "left" will result in v = new Vertex(-1, 0)
     // "right" will result in v = new Vertex(1, 0)
-    Vertex dest = new Vertex(dx, dy);
 
-    for (Edge e : arr)
-    if (e.containsVertex(currentPosition) && e.containsVertex(dest)) {
-      this.currentPosition = currentPosition.addVertices(dest);
+    Vertex transform = new Vertex(dx, dy);
+    Vertex dest = transform.addVertices(this.currentPosition);
+
+    if (dest.x < 0 || dest.y < 0 || dest.x >= width
+        || dest.y >= height) {
+      dest = this.currentPosition;
     }
+
+    System.out.println(currentPosition.toString() + ", " + transform.toString() + ", " + dest.toString());
+
+
+    for (int i = 0; i < arr.size(); i++) {
+      if (arr.get(i).containsVertex(this.currentPosition) && arr.get(i).containsVertex(dest)) {
+        this.currentPosition = dest;
+        visited.add(arr.get(i));
+        return i;
+      }
+    }
+    return -1;
   }
 
-  // 
-  void visitEdge(Edge e) {
-    this.visited.add(e);
-    e.userVisited = true;
-  }
 
   // draws the player
   void drawPlayer(WorldScene ws, int cellSize, int width, int height) {

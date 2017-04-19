@@ -61,7 +61,7 @@ class Maze extends World {
 
   // runs the Maze application
   public static void main(String[] argv) {
-    Maze maze = new Maze(60, 60);
+    Maze maze = new Maze(20, 20);
     maze.bigBang(maze.width * maze.responsiveSize, maze.height * maze.responsiveSize, .01);
   }
 
@@ -138,8 +138,11 @@ class Maze extends World {
         }
       }
     }
-    //player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
+    player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     for (Edge e : this.edgesInTree) {
+      e.drawEdge(ws, this.responsiveSize);
+    }
+    for (Edge e : player.visited) {
       e.drawEdge(ws, this.responsiveSize);
     }
     for (Edge e : this.solution) {
@@ -202,15 +205,21 @@ class Maze extends World {
           e.resetEdge(this.allVertices);
         }
         this.solution = new ArrayList<>();
-      } else if (s.equals("up")) {
-        player.movePlayer(0, -1, edgesInTree);
-      } else if (s.equals("left")) {
-        player.movePlayer(-1, 0, edgesInTree);
-      } else if (s.equals("down")) {
-        player.movePlayer(0, 1, edgesInTree);
-      } else if (s.equals("right")) {
-        player.movePlayer(1, 0, edgesInTree);
-      } else {
+      } else if (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right")) {
+        int index;
+        if (s.equals("up")) {
+          index = player.movePlayer(0, -1, this.edgesInTree, this.width, this.height);
+        } else if (s.equals("left")) {
+          index = player.movePlayer(-1, 0, this.edgesInTree, this.width, this.height);
+        } else if (s.equals("down")) {
+          index = player.movePlayer(0, 1, this.edgesInTree, this.width, this.height);
+        } else {
+          index = player.movePlayer(1, 0, this.edgesInTree, this.width, this.height);
+        }
+        if (index > 0 && index < this.edgesInTree.size()) {
+          this.edgesInTree.get(index).userEdge(this.allVertices);
+        }
+      }  else {
         return;
       }
     } else {
