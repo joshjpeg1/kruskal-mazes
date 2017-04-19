@@ -189,4 +189,13 @@ class Utils {
     }
     return keys;
   }
+
+  int edgeIndex(ArrayList<Edge> edges, Edge e) {
+    for (int i = 0; i < edges.size(); i++) {
+      if (e.equals(edges.get(i))) {
+        return i;
+      }
+    }
+    return -1;
+  }
 }
