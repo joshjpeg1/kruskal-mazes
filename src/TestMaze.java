@@ -1,6 +1,5 @@
 import tester.Tester;
 import java.awt.Color;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,8 +15,8 @@ public class TestMaze {
     Vertex ex3 = new Vertex(1, 2);
 
     return t.checkExpect(ex1.hashCode(), 1001)
-      && t.checkExpect(ex2.hashCode(), 2001)
-      && t.checkExpect(ex3.hashCode(), 1002);
+        && t.checkExpect(ex2.hashCode(), 2001)
+        && t.checkExpect(ex3.hashCode(), 1002);
   }
 
   // tests the equals method for Vertex
@@ -29,9 +28,9 @@ public class TestMaze {
     Edge edge = new Edge(ex1, ex2, 15);
 
     return t.checkExpect(ex1.equals(edge), false)
-      && t.checkExpect(ex1.equals(ex2), false)
-      && t.checkExpect(ex2.equals(ex3), false)
-      && t.checkExpect(ex1.equals(ex4), true);
+        && t.checkExpect(ex1.equals(ex2), false)
+        && t.checkExpect(ex2.equals(ex3), false)
+        && t.checkExpect(ex1.equals(ex4), true);
 
   }
 
@@ -44,9 +43,9 @@ public class TestMaze {
     Vertex ex4 = new Vertex(1, 2);
 
     return t.checkExpect(exMid.direction(ex1), Vertex.NORTH)
-      && t.checkExpect(exMid.direction(ex2), Vertex.WEST)
-      && t.checkExpect(exMid.direction(ex3), Vertex.EAST)
-      && t.checkExpect(exMid.direction(ex4), Vertex.SOUTH);
+        && t.checkExpect(exMid.direction(ex2), Vertex.WEST)
+        && t.checkExpect(exMid.direction(ex3), Vertex.EAST)
+        && t.checkExpect(exMid.direction(ex4), Vertex.SOUTH);
   }
 
   // tests the cellColor method for Vertex
@@ -56,8 +55,8 @@ public class TestMaze {
     Vertex ex3 = new Vertex(1, 1);
 
     return t.checkExpect(ex1.cellColor(3, 3, false), new Color(33, 127, 70))
-      && t.checkExpect(ex2.cellColor(3, 3, false), new Color(108, 32, 128))
-      && t.checkExpect(ex3.cellColor(3, 3, false), new Color(192, 192, 192));
+        && t.checkExpect(ex2.cellColor(3, 3, false), new Color(108, 32, 128))
+        && t.checkExpect(ex3.cellColor(3, 3, false), new Color(192, 192, 192));
   }
 
   // tests the equals method for Edge
@@ -71,12 +70,12 @@ public class TestMaze {
     Edge ex7 = new Edge(new Vertex(1, 0), new Vertex(1, 1), 10);
 
     return t.checkExpect(ex1.equals(new Vertex(0, 0)), false)
-      && t.checkExpect(ex1.equals(ex2), false)
-      && t.checkExpect(ex1.equals(ex3), false)
-      && t.checkExpect(ex2.equals(ex3), false)
-      && t.checkExpect(ex2.equals(ex4), false)
-      && t.checkExpect(ex4.equals(ex5), true)
-      && t.checkExpect(ex5.equals(ex6), true);
+        && t.checkExpect(ex1.equals(ex2), false)
+        && t.checkExpect(ex1.equals(ex3), false)
+        && t.checkExpect(ex2.equals(ex3), false)
+        && t.checkExpect(ex2.equals(ex4), false)
+        && t.checkExpect(ex4.equals(ex5), true)
+        && t.checkExpect(ex5.equals(ex6), true);
   }
 
   // tests the compareWeights method for Edge
@@ -86,8 +85,8 @@ public class TestMaze {
     Edge ex3 = new Edge(new Vertex(1, 0), new Vertex(1, 1), 10);
 
     return t.checkExpect(ex1.compareWeights(ex2), -1)
-      && t.checkExpect(ex2.compareWeights(ex3), 1)
-      && t.checkExpect(ex1.compareWeights(ex3), 0);
+        && t.checkExpect(ex2.compareWeights(ex3), 1)
+        && t.checkExpect(ex1.compareWeights(ex3), 0);
   }
 
   // tests the append method for Utils
@@ -103,9 +102,9 @@ public class TestMaze {
 
 
     return t.checkExpect(this.utils.append(ex1, ex2), ex3)
-      && t.checkExpect(this.utils.append(ex4, ex5), ex4)
-      && t.checkExpect(this.utils.append(ex4, ex6), ex6)
-      && t.checkExpect(this.utils.append(ex7, ex5), ex7);
+        && t.checkExpect(this.utils.append(ex4, ex5), ex4)
+        && t.checkExpect(this.utils.append(ex4, ex6), ex6)
+        && t.checkExpect(this.utils.append(ex7, ex5), ex7);
   }
 
   // tests the quicksort method for Utils
@@ -173,9 +172,9 @@ public class TestMaze {
     afters.add(ex6);
 
     return t.checkExpect(this.utils.quicksortHelp(ex4, unsorted, new EdgeComparator(), true),
-      befores)
-      && t.checkExpect(this.utils.quicksortHelp(ex4, unsorted, new EdgeComparator(), false),
-      afters);
+        befores)
+        && t.checkExpect(this.utils.quicksortHelp(ex4, unsorted, new EdgeComparator(), false),
+        afters);
   }
 
   // tests the addNoDupes method for Utils
@@ -186,8 +185,8 @@ public class TestMaze {
     ArrayList<String> ex2 = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
 
     return t.checkExpect(this.utils.addNoDupes(endp, "D"), dList)
-      && t.checkExpect(this.utils.addNoDupes(ex1, "D"), ex2)
-      && t.checkExpect(this.utils.addNoDupes(ex2, "D"), ex1);
+        && t.checkExpect(this.utils.addNoDupes(ex1, "D"), ex2)
+        && t.checkExpect(this.utils.addNoDupes(ex2, "D"), ex1);
   }
 
   // tests the collectVertices method for Utils
@@ -223,13 +222,13 @@ public class TestMaze {
     hash.put("F", "F");
 
     return t.checkExpect(this.utils.cycle(hash, "E", "C"), false)
-      && t.checkExpect(this.utils.cycle(hash, "C", "D"), false)
-      && t.checkExpect(this.utils.cycle(hash, "A", "B"), false)
-      && t.checkExpect(this.utils.cycle(hash, "B", "E"), false)
-      && t.checkExpect(this.utils.cycle(hash, "B", "C"), true)
-      && t.checkExpect(this.utils.cycle(hash, "F", "D"), false)
-      && t.checkExpect(this.utils.cycle(hash, "A", "E"), true)
-      && t.checkExpect(this.utils.cycle(hash, "B", "F"), true);
+        && t.checkExpect(this.utils.cycle(hash, "C", "D"), false)
+        && t.checkExpect(this.utils.cycle(hash, "A", "B"), false)
+        && t.checkExpect(this.utils.cycle(hash, "B", "E"), false)
+        && t.checkExpect(this.utils.cycle(hash, "B", "C"), true)
+        && t.checkExpect(this.utils.cycle(hash, "F", "D"), false)
+        && t.checkExpect(this.utils.cycle(hash, "A", "E"), true)
+        && t.checkExpect(this.utils.cycle(hash, "B", "F"), true);
   }
 
   // tests the findRoot method for Utils
@@ -243,23 +242,14 @@ public class TestMaze {
     hash.put("F", "D");
 
     return t.checkException(new NullPointerException("Given element does not exist"),
-      this.utils, "findRoot", hash, "G")
-      && t.checkExpect(this.utils.findRoot(hash, "A"), "E")
-      && t.checkExpect(this.utils.findRoot(hash, "B"), "E")
-      && t.checkExpect(this.utils.findRoot(hash, "C"), "E")
-      && t.checkExpect(this.utils.findRoot(hash, "D"), "E")
-      && t.checkExpect(this.utils.findRoot(hash, "E"), "E")
-      && t.checkExpect(this.utils.findRoot(hash, "F"), "E");
+        this.utils, "findRoot", hash, "G")
+        && t.checkExpect(this.utils.findRoot(hash, "A"), "E")
+        && t.checkExpect(this.utils.findRoot(hash, "B"), "E")
+        && t.checkExpect(this.utils.findRoot(hash, "C"), "E")
+        && t.checkExpect(this.utils.findRoot(hash, "D"), "E")
+        && t.checkExpect(this.utils.findRoot(hash, "E"), "E")
+        && t.checkExpect(this.utils.findRoot(hash, "F"), "E");
   }
-
-  // tests the generateGraph method for Maze
-//  boolean testGenerateGraph(Tester t) {
-//    Maze maze = new Maze(0, 0);
-//    return t.checkExpect(maze.generateGraph(0, 0).size(), 0)
-//      && t.checkExpect(maze.generateGraph(3, 3).size(), 12)
-//      && t.checkExpect(maze.generateGraph(100, 60).size(), 11840);
-//  }
-
 
   // tests the kruskal method for Maze
   boolean testKruskal(Tester t) {
@@ -293,9 +283,9 @@ public class TestMaze {
     Maze maze4 = new Maze(60, 100);
 
     return t.checkExpect(maze1.responsiveSize(), Vertex.CELL_SIZE)
-      && t.checkExpect(maze2.responsiveSize(), Vertex.CELL_SIZE)
-      && t.checkExpect(maze3.responsiveSize(), (Vertex.CELL_SIZE / 2))
-      && t.checkExpect(maze4.responsiveSize(), (Vertex.CELL_SIZE / 2));
+        && t.checkExpect(maze2.responsiveSize(), Vertex.CELL_SIZE)
+        && t.checkExpect(maze3.responsiveSize(), (Vertex.CELL_SIZE / 2))
+        && t.checkExpect(maze4.responsiveSize(), (Vertex.CELL_SIZE / 2));
   }
 
   // tests the movePlayer method for Player
@@ -330,12 +320,133 @@ public class TestMaze {
     t.checkExpect(examplePlay, new Player(new Vertex(0, 2)));
   }
 
-  // getNeighbors in Utils
+
+  // tests for the addVertices method for Vertex
+  boolean testAddVertices(Tester t) {
+    Vertex ex1 = new Vertex(0, 0);
+    Vertex ex2 = new Vertex(1, 0);
+    Vertex ex3 = new Vertex(0, 1);
+    Vertex ex4 = new Vertex(1, 1);
+
+    return t.checkExpect(ex1.addVertices(1, 0), ex2)
+        && t.checkExpect(ex1.addVertices(0, 1), ex3)
+        && t.checkExpect(ex2.addVertices(0, 1), ex4);
+  }
+
+  // tests the getOther method in edge
+  boolean testGetOther(Tester t) {
+    Vertex ex1v = new Vertex(0, 0);
+    Vertex ex2v = new Vertex(1, 0);
+    Vertex ex3v = new Vertex(0, 1);
+    Vertex ex4v = new Vertex(1, 1);
+    Edge exE1 = new Edge(ex1v, ex2v, 10);
+    Edge exE2 = new Edge(ex3v, ex4v, 10);
+
+    return t.checkExpect(exE1.getOther(ex1v), ex2v)
+        && t.checkExpect(exE1.getOther(ex2v), ex1v)
+        && t.checkExpect(exE2.getOther(ex3v), ex4v)
+        && t.checkExpect(exE2.getOther(ex4v), ex3v);
+  }
+
+  // tests the samePosition method in player
+  boolean testSamePosition(Tester t) {
+    Player exp1 = new Player(new Vertex(2, 2));
+    Vertex ex1v = new Vertex(0, 0);
+    Vertex ex2v = new Vertex(2, 2);
+
+    return t.checkExpect(exp1.samePosition(ex1v), false)
+        && t.checkExpect(exp1.samePosition(ex2v), true);
+  }
+
+  // tests the getNeighbors method in Utils
+  boolean testGetNeighbors(Tester t) {
+    Vertex ex1v = new Vertex(0, 0);
+    Vertex ex2v = new Vertex(1, 0);
+    Vertex ex3v = new Vertex(0, 1);
+    Vertex ex4v = new Vertex(1, 1);
+    Edge exE1 = new Edge(ex1v, ex2v, 10);
+    Edge exE2 = new Edge(ex3v, ex4v, 10);
+    ArrayList<Edge> arrEx = new ArrayList<>();
+    arrEx.add(exE1);
+    arrEx.add(exE2);
+    ArrayList<Vertex> res1 = new ArrayList<>();
+    res1.add(ex2v);
+    ArrayList<Vertex> res2 = new ArrayList<>();
+    res1.add(ex1v);
+    ArrayList<Vertex> res3 = new ArrayList<>();
+    res1.add(ex4v);
+    ArrayList<Vertex> res4 = new ArrayList<>();
+    res1.add(ex3v);
+
+    return t.checkExpect(this.utils.getNeighbors(ex1v, arrEx), res1)
+        && t.checkExpect(this.utils.getNeighbors(ex2v, arrEx), res2)
+        && t.checkExpect(this.utils.getNeighbors(ex3v, arrEx), res3)
+        && t.checkExpect(this.utils.getNeighbors(ex4v, arrEx), res4);
+  }
 
   // reverseArr in Utils
+  boolean testReverseArr(Tester t) {
+    ArrayList<Integer> arr = new ArrayList<>();
+    arr.add(1);
+    arr.add(2);
+    arr.add(3);
+    arr.add(4);
+    arr.add(5);
+    arr.add(6);
 
-  // getValues in Utils
+    ArrayList<Integer> result = new ArrayList<>();
+    result.add(6);
+    result.add(5);
+    result.add(4);
+    result.add(3);
+    result.add(2);
+    result.add(1);
 
-  // reportScore in Maze
-  
+    return t.checkExpect(this.utils.reverseArr(arr), result)
+        && t.checkExpect(this.utils.reverseArr(result), arr);
+  }
+
+
+  // tests the getValues method in Utils
+  boolean testGetValues(Tester t) {
+    HashMap<String, Integer> hashEx = new HashMap<>();
+    hashEx.put("a", 0);
+    hashEx.put("b", 1);
+    hashEx.put("c", 2);
+    hashEx.put("d", 3);
+    hashEx.put("e", 4);
+    hashEx.put("f", 5);
+
+    ArrayList<String> arr = new ArrayList<>();
+    arr.add("a");
+    arr.add("b");
+    arr.add("c");
+    arr.add("d");
+    arr.add("e");
+    arr.add("f");
+
+    ArrayList<Integer> ans = new ArrayList<>();
+    ans.add(0);
+    ans.add(1);
+    ans.add(2);
+    ans.add(3);
+    ans.add(4);
+    ans.add(5);
+
+
+    return t.checkExpect(this.utils.getValues(hashEx, arr), ans);
+  }
+
+
+  // tests the reportScore method in Maze
+  boolean testReportScore(Tester t) {
+    Maze maze0 = new Maze(20, 20);
+    Maze maze1 = new Maze(2, 2);
+
+    return t.checkExpect(maze1.reportScore(), "Breadth and Depth tied at " + maze1.depth.size() +
+        " moves.");
+
+    // cannot test other results of this method due to random maze generation
+
+  }
 }

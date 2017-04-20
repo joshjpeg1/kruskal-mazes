@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 // an ArrayList representing a queue structure
-public class Queue<T> implements IDeque<T>{
+public class Queue<T> implements IDeque<T> {
   ArrayList<T> items;
 
   // Constructor
@@ -34,8 +34,8 @@ public class Queue<T> implements IDeque<T>{
 
   // adds the given item to the end of the queue
   public T push(T t) {
-      this.items.add(t);
-      return t;
+    this.items.add(t);
+    return t;
   }
 
   // returns whether or not this Queue is empty

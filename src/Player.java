@@ -38,9 +38,6 @@ public class Player {
 
   // returns true if the player is at the same position of the given vertex
   boolean samePosition(Vertex v) {
-    if (this.currentPosition.equals(v)) {
-      return true;
-    }
-    return false;
+    return this.currentPosition.equals(v);
   }
 }

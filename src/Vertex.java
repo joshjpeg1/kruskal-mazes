@@ -113,11 +113,7 @@ public class Vertex {
 
   // returns true if the Vertex is within the given bounds
   boolean inBounds(int width, int height) {
-    if (this.x > 0 || this.y > 0 || this.x < width || this.y < height) {
-      return true;
-    } else {
-      return false;
-    }
+    return (this.x > 0 || this.y > 0 || this.x < width || this.y < height);
   }
 
 }

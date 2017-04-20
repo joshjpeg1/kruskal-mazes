@@ -75,12 +75,6 @@ class Maze extends World {
     this.solutionDisplayed = false;
   }
 
-  // runs the Maze application
-  public static void main(String[] argv) {
-    Maze maze = new Maze(100, 60);
-    maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
-  }
-
   // generates a randomly weighted graph
   ArrayList<Edge> generateGraph(int width, int height) {
     ArrayList<Edge> edges = new ArrayList<>();
@@ -109,6 +103,12 @@ class Maze extends World {
     return edges;
   }
 
+  // runs the Maze application
+  public static void main(String[] argv) {
+    Maze maze = new Maze(100, 60);
+    maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
+  }
+
   // returns a minimum spanning tree based on Kruskal algorithm
   ArrayList<Edge> kruskal(ArrayList<Edge> worklist, ArrayList<Vertex> vertices) {
     ArrayList<Edge> workSorted = this.utils.quicksort(worklist, new EdgeComparator());
@@ -135,7 +135,7 @@ class Maze extends World {
   // returns the current worldScene
   public WorldScene makeScene() {
     WorldScene ws = new WorldScene(this.width * this.responsiveSize,
-      (this.height * this.responsiveSize) + 40);
+        (this.height * this.responsiveSize) + 40);
     for (Vertex v : this.allVertices) {
       v.drawVertex(ws, this.responsiveSize, this.width, this.height, false);
     }
@@ -172,8 +172,8 @@ class Maze extends World {
     String scorebar = getScorebar();
 
     ws.placeImageXY(new OverlayImage(new TextImage(scorebar, 20, Color.white),
-      new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
-      (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
+            new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
+        (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
     return ws;
   }
 
@@ -277,8 +277,8 @@ class Maze extends World {
         }
         this.player = new Player(new Vertex(0, 0));
         solutionDisplayed = false;
-      } else if (!solutionDisplayed &&
-        (s.equals("up") || s.equals("left") || s.equals("down") || s.equals ("right"))) {
+      } else if (!solutionDisplayed
+          && (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right"))) {
         int index;
         if (s.equals("up")) {
           index = player.movePlayer(0, -1, this.edgesInTree, this.width, this.height);
@@ -363,7 +363,7 @@ class Maze extends World {
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
     ArrayList<Edge> result = new ArrayList<>();
     ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
-    while(!v.equals(start)) {
+    while (!v.equals(start)) {
       for (Edge e : worklist) {
         if (e.to.equals(v)) {
           v = e.from;
