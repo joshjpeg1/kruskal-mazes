@@ -141,7 +141,7 @@ class Edge<T> {
   // sets an Edge and its vertices to a correct solution state
   void correctEdge(ArrayList<Vertex> vertices) {
     this.correct = true;
-    this.compVisited = true;
+    //this.compVisited = true;
     for (Vertex v : vertices) {
       if (v.equals(this.from) || v.equals(this.to)) {
         v.correctVertex();

@@ -74,7 +74,7 @@ public class Vertex {
       return new Color(255, 200, 10);
     } else if (this.compVisited) {
       return new Color(144, 184, 242);
-    }  else if (this.userVisited || (this.x == 0 && this.y == 0)) {
+    }  else if (this.x == 0 && this.y == 0) {
       return new Color(33, 127, 70);
     } else if (this.x == width - 1 && this.y == height - 1) {
       return new Color(108, 32, 128);
@@ -96,7 +96,7 @@ public class Vertex {
   // sets the vertex as part of a correct solution
   void correctVertex() {
     this.correct = true;
-    this.visitVertex();
+    //this.visitVertex();
   }
 
   // resets the vertex to an untouched state

@@ -3,66 +3,86 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javalib.impworld.*;
-import javalib.worldimages.OverlayImage;
-import javalib.worldimages.RectangleImage;
-import javalib.worldimages.TextImage;
+import javalib.worldimages.*;
 
 // represents a Maze
 class Maze extends World {
+  // utilities
+  Utils utils;
+  Random rand;
+  // maze properties
   int width;
   int height;
+  int responsiveSize;
+  int horizFactor;
+  int vertFactor;
+  // edge and vertex lists
   ArrayList<Edge> allEdges;
   ArrayList<Vertex> allVertices;
   ArrayList<Edge> edgesInTree;
   ArrayList<Edge> breadth;
   ArrayList<Edge> depth;
   ArrayList<Edge> solution;
-  Utils utils;
-  Random rand;
-  int responsiveSize;
+  // lpayer
   Player player;
-  int horizFactor;
-  int vertFactor;
+  // animating tools
   ArrayList<Edge> animateList;
   int drawingWhat;
   int speed;
   boolean solutionDisplayed;
-
+  // constants for animating
   static final int MAZEWALLS = 0;
   static final int SEARCHALGO = 1;
   static final int SOLUTION = 2;
 
   // constructor (testing purposes)
   Maze(ArrayList<Edge> worklist) {
-    this.rand = new Random();
     this.utils = new Utils();
+    this.rand = new Random();
+    this.width = width;
+    this.height = height;
+    this.responsiveSize = this.responsiveSize();
+    this.horizFactor = 1;
+    this.vertFactor = 1;
     this.allEdges = worklist;
     this.allVertices = this.utils.collectVertices(this.allEdges);
+    this.edgesInTree = new ArrayList<>();
+    this.breadth = new ArrayList<>();
+    this.depth = new ArrayList<>();
+    this.solution = new ArrayList<>();
+    this.player = new Player(new Vertex(0, 0));
+    this.animateList = new ArrayList<>();
+    this.drawingWhat = -1;
+    this.speed = 0;
+    this.solutionDisplayed = false;
   }
 
   // constructor
   Maze(int width, int height) {
-    this.rand = new Random();
     this.utils = new Utils();
+    this.rand = new Random();
     this.width = width;
     this.height = height;
+    this.responsiveSize = this.responsiveSize();
     this.horizFactor = 1;
     this.vertFactor = 1;
-    this.generateGraph();
-    this.responsiveSize = this.responsiveSize();
-    this.player = new Player(this.allVertices.get(0));
-    this.drawingWhat = MAZEWALLS;
+    this.initMaze();
+    this.player = new Player(new Vertex(0, 0));
     this.animateList = new ArrayList<>();
-    for (Edge e : this.edgesInTree) {
-      this.animateList.add(e);
-    }
-    this.edgesInTree = new ArrayList<>();
-    speed = 0;
-    solutionDisplayed = false;
+    this.drawingWhat = MAZEWALLS;
+    this.startAnimation(false);
+    this.speed = 0;
+    this.solutionDisplayed = false;
+  }
+
+  // runs the Maze application
+  public static void main(String[] argv) {
+    Maze maze = new Maze(100, 60);
+    maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
   }
 
   // generates the final graph, with all breadth, depth, and solutions calculated
-  void generateGraph() {
+  void initMaze() {
     this.allEdges = this.generateGraph(this.width, this.height);
     this.allVertices = this.utils.collectVertices(this.allEdges);
     this.edgesInTree = this.kruskal(this.allEdges, this.allVertices);
@@ -101,12 +121,6 @@ class Maze extends World {
       }
     }
     return edges;
-  }
-
-  // runs the Maze application
-  public static void main(String[] argv) {
-    Maze maze = new Maze(100, 60);
-    maze.bigBang(maze.width * maze.responsiveSize, (maze.height * maze.responsiveSize) + 40, .01);
   }
 
   // returns a minimum spanning tree based on Kruskal algorithm
@@ -164,42 +178,42 @@ class Maze extends World {
       }
     }
     if (this.animateList.size() == 0 && !solutionDisplayed) {
-      player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
+      this.player.drawPlayer(ws, this.responsiveSize, this.width, this.height);
     }
     for (Edge e : this.edgesInTree) {
       e.drawEdge(ws, this.responsiveSize);
     }
-    String scorebar = getScorebar();
 
-    ws.placeImageXY(new OverlayImage(new TextImage(scorebar, 20, Color.white),
+    ws.placeImageXY(new OverlayImage(new TextImage(this.getStatus(), 20, Color.white),
             new RectangleImage(this.width * this.responsiveSize, 40, "solid", Color.black)),
         (this.width * this.responsiveSize) / 2, (this.height * this.responsiveSize) + 20);
     return ws;
   }
 
-  // returns the text for the scorebar
-  String getScorebar() {
-    String scorebar;
+  // helper to the makeScene method
+  // returns the text for the status bar
+  String getStatus() {
+    String status;
     if (this.animateList.size() != 0) {
       if (this.drawingWhat == MAZEWALLS) {
-        scorebar = "Knocking down " + this.animateList.size() + " walls...";
+        status = "Knocking down " + this.animateList.size() + " walls...";
       } else if (this.drawingWhat == SEARCHALGO) {
-        scorebar = "Searching for solution...";
+        status = "Searching for solution...";
       } else {
-        scorebar = "Displaying solution...";
+        status = "Displaying solution...";
       }
     } else if (this.player.samePosition(new Vertex(this.width - 1, this.height - 1))) {
-      scorebar = "Maze Solved!";
+      status = "Maze Solved!";
       if (!this.solutionDisplayed) {
         this.drawingWhat = Maze.SOLUTION;
         this.startAnimation(false);
       }
     } else if (this.solutionDisplayed) {
-      scorebar = reportScore();
+      status = reportScore();
     } else {
-      scorebar = "Solve the maze";
+      status = "Solve the maze";
     }
-    return scorebar;
+    return status;
   }
 
   // starts the animation of maze walls, search algorithms, or solution
@@ -210,9 +224,9 @@ class Maze extends World {
         this.animateList.add(e);
       }
       this.edgesInTree = new ArrayList<>();
-    } else if (this.drawingWhat == SEARCHALGO || this.drawingWhat == SOLUTION) {
+    } else if (this.drawingWhat == Maze.SEARCHALGO || this.drawingWhat == Maze.SOLUTION) {
       ArrayList<Edge> localSol = new ArrayList<>();
-      if (this.drawingWhat == SOLUTION) {
+      if (this.drawingWhat == Maze.SOLUTION) {
         for (Edge e : this.solution) {
           localSol.add(e);
         }
@@ -234,7 +248,7 @@ class Maze extends World {
       for (Edge e : localSol) {
         this.animateList.add(e);
       }
-      solutionDisplayed = true;
+      this.solutionDisplayed = true;
     } else {
       return;
     }
@@ -259,24 +273,24 @@ class Maze extends World {
         this.horizFactor = 1;
         this.vertFactor = 1;
       }
-      this.generateGraph();
-      this.drawingWhat = MAZEWALLS;
+      this.initMaze();
+      this.drawingWhat = Maze.MAZEWALLS;
       this.startAnimation(false);
     } else if (s.equals("escape")) {
       System.exit(0);
     } else if (this.animateList.size() == 0) {
       if (s.equals("b")) {
-        this.drawingWhat = SEARCHALGO;
+        this.drawingWhat = Maze.SEARCHALGO;
         this.startAnimation(true);
       } else if (s.equals("d")) {
-        this.drawingWhat = SEARCHALGO;
+        this.drawingWhat = Maze.SEARCHALGO;
         this.startAnimation(false);
       } else if (s.equals("r")) {
         for (Edge e : this.edgesInTree) {
           e.resetEdge(this.allVertices);
         }
         this.player = new Player(new Vertex(0, 0));
-        solutionDisplayed = false;
+        this.solutionDisplayed = false;
       } else if (!solutionDisplayed
           && (s.equals("up") || s.equals("left") || s.equals("down") || s.equals("right"))) {
         int index;
@@ -362,7 +376,7 @@ class Maze extends World {
   // returns the solution to the given maze
   ArrayList<Edge> searchHelp(Vertex start, HashMap<Vertex, Edge> cameFromEdge, Vertex v) {
     ArrayList<Edge> result = new ArrayList<>();
-    ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, allVertices);
+    ArrayList<Edge> worklist = this.utils.getValues(cameFromEdge, this.allVertices);
     while (!v.equals(start)) {
       for (Edge e : worklist) {
         if (e.to.equals(v)) {
